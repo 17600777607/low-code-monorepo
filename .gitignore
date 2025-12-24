@@ -23,11 +23,6 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment
-.env
-.env.local
-.env.*.local
-
 # Cache
 .cache
 .eslintcache
@@ -36,6 +31,10 @@ yarn-error.log*
 # Testing
 coverage
 .nyc_output
+
+# Environment variables
+.env.local
+.env.*.local
 
 # Misc
 *.pid

@@ -40,11 +40,13 @@ pnpm install
 ### 开发模式
 
 启动主应用:
+
 ```bash
 pnpm run dev
 ```
 
 启动微应用:
+
 ```bash
 pnpm run dev:micro
 ```
@@ -52,22 +54,23 @@ pnpm run dev:micro
 ### 生产构建
 
 构建所有应用:
+
 ```bash
 pnpm run build:all
 ```
 
 ## 📝 可用脚本
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm run dev` | 启动主应用开发服务器 (端口 3000) |
-| `pnpm run dev:micro` | 启动微应用开发服务器 (端口 3001) |
-| `pnpm run build` | 构建主应用 |
-| `pnpm run build:all` | 构建所有应用 |
-| `pnpm run type-check` | TypeScript 类型检查 |
-| `pnpm run lint` | ESLint 代码检查 |
-| `pnpm run format` | Prettier 格式化代码 |
-| `pnpm run format:check` | 检查代码格式 |
+| 命令                    | 说明                             |
+| ----------------------- | -------------------------------- |
+| `pnpm run dev`          | 启动主应用开发服务器 (端口 3000) |
+| `pnpm run dev:micro`    | 启动微应用开发服务器 (端口 3001) |
+| `pnpm run build`        | 构建主应用                       |
+| `pnpm run build:all`    | 构建所有应用                     |
+| `pnpm run type-check`   | TypeScript 类型检查              |
+| `pnpm run lint`         | ESLint 代码检查                  |
+| `pnpm run format`       | Prettier 格式化代码              |
+| `pnpm run format:check` | 检查代码格式                     |
 
 ## 🔧 技术栈
 
@@ -83,6 +86,7 @@ pnpm run build:all
 ### Module Federation 配置
 
 **主应用 (宿主)**:
+
 ```typescript
 {
   name: 'main_app',
@@ -96,6 +100,7 @@ pnpm run build:all
 ```
 
 **微应用 (远程)**:
+
 ```typescript
 {
   name: 'micro_example',
