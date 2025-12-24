@@ -10,6 +10,7 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import webpack from 'webpack'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
+import consola from 'consola'
 
 const { container, DefinePlugin } = webpack
 const { ModuleFederationPlugin } = container
@@ -26,8 +27,8 @@ export default (
   argv: { mode?: Configuration['mode'] } = {}
 ): Configuration => {
   const envTarget = (env.APP_ENV || 'development') as Env
-  process.stdout.write(`env.APP_ENV: ${envTarget}\n`)
-  process.stdout.write(`argv.mode: ${argv.mode}\n`)
+  consola.success(`APP_ENV: ${envTarget}`)
+  consola.success(`mode: ${argv.mode}`)
 
   const mode = argv.mode || 'development'
   const isProd = mode === 'production'
