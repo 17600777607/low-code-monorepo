@@ -32,7 +32,7 @@
 ## 📁 项目结构
 
 ```
-vue3-webpack/
+low-code-monorepo/
 ├── src/                      # 主应用(宿主)
 ├── @cwj/                     # 子应用和公共包
 │   ├── account/             # 账号中心(登录站点)
