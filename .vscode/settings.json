@@ -8,13 +8,17 @@
     "source.fixAll.eslint": "explicit"
   },
   // ESLint 验证的文件类型
-  "eslint.validate": ["javascript", "javascriptreact", "vue"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
   // Vue 文件使用 Prettier 格式化
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // JavaScript 文件使用 Prettier 格式化
   "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // TypeScript 文件使用 Prettier 格式化
+  "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // JSON 文件使用 Prettier 格式化
@@ -25,11 +29,17 @@
   "markdown.preview.breaks": true,
   "markdown.preview.fontSize": 14,
   "markdown.preview.lineHeight": 1.6,
-
   // 自动滚动同步
   "markdown.preview.scrollPreviewWithEditor": true,
   "markdown.preview.scrollEditorWithPreview": true,
 
-  // Mermaid 支持
-  "markdown.mermaid.theme": "default"
+  // TypeScript 配置
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // Volar 配置 - 使用 Hybrid Mode (推荐)
+  "vue.server.hybridMode": true,
+
+  // 禁用内置的 TypeScript 和 JavaScript 语言功能(让 Volar 接管)
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false
 }

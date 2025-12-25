@@ -1,6 +1,6 @@
 # 前端低代码平台
 
-> 基于 Vue3 + TypeScript + Webpack5 Module Federation 的微前端低代码平台
+> 基于 Vue3 + TypeScript + Vite + Module Federation 的微前端低代码平台
 
 ## 📖 项目概述
 
