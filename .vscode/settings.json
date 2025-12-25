@@ -8,11 +8,7 @@
     "source.fixAll.eslint": "explicit"
   },
   // ESLint 验证的文件类型
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "vue"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "vue"],
   // Vue 文件使用 Prettier 格式化
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -24,7 +20,16 @@
   // JSON 文件使用 Prettier 格式化
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  // Markdown 预览设置
+  "markdown.preview.breaks": true,
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.lineHeight": 1.6,
+
+  // 自动滚动同步
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.scrollEditorWithPreview": true,
+
+  // Mermaid 支持
+  "markdown.mermaid.theme": "default"
 }
-
-
