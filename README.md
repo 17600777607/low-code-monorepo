@@ -1,5 +1,9 @@
 # 前端低代码平台
 
+[![CI](https://github.com/username/repo/workflows/CI/badge.svg)](https://github.com/username/repo/actions)
+[![Deploy](https://github.com/username/repo/workflows/Deploy/badge.svg)](https://github.com/username/repo/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 > 基于 Vue3 + TypeScript + Vite 7 的微前端低代码平台
 
 ## 📖 项目概述
@@ -113,7 +117,8 @@ pnpm --filter renderer build  # 渲染器
 
 - [架构设计](./docs/架构设计.md) - 微前端架构、应用通信、技术选型
 - [开发指南](./docs/开发指南.md) - 开发流程、调试方法、常见问题
-- [部署文档](./docs/部署文档.md) - 构建流程、Nginx 配置、CI/CD
+- [部署文档](./docs/部署文档.md) - 构建流程、Nginx 配置、服务器部署
+- [CI/CD 配置指南](./docs/CICD配置指南.md) - GitHub Actions 自动化部署
 - [开发规范](./docs/开发规范.md) - 代码规范、Git 规范、目录规范
 - [待办事项](./docs/待办事项.md) - 任务清单和开发计划
 

@@ -1,4 +1,4 @@
-<template>工作台</template>
+<template>工作台页面</template>
 
 <script setup lang="ts"></script>
 
