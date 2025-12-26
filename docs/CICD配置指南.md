@@ -19,6 +19,8 @@
 2. **TypeScript 类型检查** - vue-tsc
 3. **构建测试** - 构建所有环境(development, test, production)
 
+**注意**: 使用 Node.js 22.x 和 pnpm 10.x 版本,以满足 Vite 7 的要求
+
 ### 2. 部署流程 (deploy.yml)
 
 **触发条件:**
