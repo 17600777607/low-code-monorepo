@@ -1,6 +1,6 @@
 # 前端低代码平台
 
-> 基于 Vue3 + TypeScript + Vite + Module Federation 的微前端低代码平台
+> 基于 Vue3 + TypeScript + Vite 7 的微前端低代码平台
 
 ## 📖 项目概述
 
@@ -10,30 +10,35 @@
 
 - 🎨 **可视化设计器** - 拖拽式组件编排,实时预览
 - 🚀 **多端渲染器** - 基于 AST 的动态渲染引擎
-- 🏗️ **微前端架构** - Webpack5 Module Federation
+- 🏗️ **微前端架构** - Vite 7 + 模块联邦
 - 🔐 **统一认证** - Cookie + XHR 拦截,自动跳转
 - 📦 **Monorepo 管理** - pnpm Workspace
 - 💎 **TypeScript** - 完整的类型支持
+- ⚡ **极速构建** - Vite 7 + Rolldown,开发体验极致
 
 ## 🛠️ 技术栈
 
 | 类别     | 技术                               |
 | -------- | ---------------------------------- |
-| 前端框架 | Vue 3.5+ + TypeScript 5.3+         |
-| 构建工具 | Webpack 5 + Module Federation      |
+| 前端框架 | Vue 3.5+ + TypeScript 5.9+         |
+| 构建工具 | Vite 7 + Rolldown                  |
 | 包管理   | pnpm Workspace (Monorepo)          |
 | 路由     | Vue Router 4 (History 模式)        |
 | 状态管理 | Pinia 2.x                          |
 | 认证授权 | 自研 @cwj/auth (Cookie + XHR 拦截) |
 | UI 组件  | 自研 @cwj/ui-pc、@cwj/ui-mobile    |
 | 工具函数 | 自研 @cwj/tools                    |
-| 代码规范 | ESLint + Prettier                  |
+| 代码规范 | ESLint 9 + Prettier 3              |
 
 ## 📁 项目结构
 
 ```
 low-code-monorepo/
-├── src/                      # 主应用(宿主)
+├── src/                      # 主应用源码
+│   ├── components/          # 组件目录
+│   ├── assets/              # 静态资源
+│   ├── App.vue              # 根组件
+│   └── main.ts              # 入口文件
 ├── @cwj/                     # 子应用和公共包
 │   ├── account/             # 账号中心(登录站点)
 │   ├── designer/            # 可视化设计器
@@ -44,8 +49,12 @@ low-code-monorepo/
 │   └── tools/               # 工具函数库(npm)
 ├── docs/                    # 文档目录
 ├── public/                  # 静态资源
-├── webpack.config.ts        # Webpack 配置
+├── apps/                    # 构建产物目录
+│   └── root/                # 主应用构建产物
+├── vite.config.ts           # Vite 配置
 ├── tsconfig.json            # TypeScript 配置
+├── eslint.config.js         # ESLint 配置
+├── .prettierrc.json         # Prettier 配置
 └── pnpm-workspace.yaml      # workspace 配置
 ```
 
@@ -53,8 +62,8 @@ low-code-monorepo/
 
 ### 环境要求
 
-- Node.js >= 16.0.0
-- pnpm >= 8.0.0
+- Node.js >= 18.0.0
+- pnpm >= 9.0.0
 
 ### 安装依赖
 
@@ -65,8 +74,14 @@ pnpm install
 ### 本地开发
 
 ```bash
-# 启动主应用
+# 开发环境
 pnpm run dev
+
+# 测试环境
+pnpm run dev:test
+
+# 生产环境
+pnpm run dev:production
 
 # 启动子应用
 pnpm --filter account dev
@@ -78,12 +93,18 @@ pnpm --filter admin dev
 ### 构建生产
 
 ```bash
-# 构建所有应用
-pnpm run build:all
+# 开发环境构建
+pnpm run build:development
+
+# 测试环境构建
+pnpm run build:test
+
+# 生产环境构建
+pnpm run build:production
 
 # 构建指定应用
-pnpm run build                # 主应用
 pnpm --filter designer build  # 设计器
+pnpm --filter renderer build  # 渲染器
 ```
 
 ## 📚 文档导航
@@ -124,19 +145,23 @@ pnpm --filter designer build  # 设计器
 
 ```bash
 # 开发
-pnpm run dev              # 启动主应用
-pnpm run dev:micro        # 启动微应用
+pnpm run dev                    # 启动开发环境
+pnpm run dev:test               # 启动测试环境
+pnpm run dev:production         # 启动生产环境
 
 # 构建
-pnpm run build            # 构建主应用
-pnpm run build:all        # 构建所有应用
+pnpm run build:development      # 构建开发环境
+pnpm run build:test             # 构建测试环境
+pnpm run build:production       # 构建生产环境
+
+# 预览
+pnpm run preview:development    # 预览开发环境构建
+pnpm run preview:test           # 预览测试环境构建
+pnpm run preview:production     # 预览生产环境构建
 
 # 代码质量
-pnpm run type-check       # TypeScript 类型检查
-pnpm run lint             # ESLint 代码检查
-pnpm run lint:fix         # 自动修复 ESLint 问题
-pnpm run format           # Prettier 格式化代码
-pnpm run check            # 完整检查(类型+lint+格式)
+pnpm run lint                   # ESLint 代码检查并自动修复
+pnpm run format                 # Prettier 格式化代码
 ```
 
 ## 🤝 贡献指南
