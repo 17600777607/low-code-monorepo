@@ -4,13 +4,20 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
-
+import federation from '@originjs/vite-plugin-federation'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     // 支持 Vue JSX/TSX
     vueJsx(),
+    federation({
+      name: 'mainApp', // 主应用名称
+      remotes: {
+        accountApp: 'http://localhost:6001/assets/accountAppEntry.js', // 远程账号中心模块
+      },
+      shared: ['vue', 'vue-router', 'pinia'], // 共享依赖
+    }),
     // Gzip 压缩
     viteCompression({
       verbose: true, // 输出压缩成功信息
@@ -31,16 +38,29 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
+      '@cwj/account': resolve(__dirname, '@cwj/account'),
     },
+  },
+  // 优化依赖预构建
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia'],
+  },
+  // 开发服务器配置
+  server: {
+    port: 5173,
+    host: true,
+    cors: true, // 允许跨域
   },
   // 构建输出到 apps/root 目录
   build: {
     outDir: resolve(__dirname, './apps/root'),
     emptyOutDir: true, // 只清空 root 目录
+    target: 'esnext', // 模块联邦需要
     // 完整的 source map
     sourcemap: true,
     // CSS 和 JS 压缩
     minify: 'terser',
+    cssCodeSplit: false, // 模块联邦建议关闭 CSS 代码分割
     terserOptions: {
       compress: {
         drop_console: true, // 删除 console

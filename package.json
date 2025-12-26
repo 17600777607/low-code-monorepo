@@ -5,14 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
+    "dev:account": "pnpm --filter @cwj/account dev",
     "dev:test": "vite --mode test",
     "dev:production": "vite --mode production",
     "build:development": "vue-tsc -b && vite build --mode development",
     "build:test": "vue-tsc -b && vite build --mode test",
     "build:production": "vue-tsc -b && vite build --mode production",
-    "preview:development": "vite preview --mode development",
-    "preview:test": "vite preview --mode test",
-    "preview:production": "vite preview --mode production",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\""
   },
@@ -36,6 +34,10 @@
     "vue-tsc": "^3.2.1"
   },
   "dependencies": {
-    "vue": "^3.5.26"
+    "@cwj/account": "workspace:*",
+    "@originjs/vite-plugin-federation": "^1.4.1",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.26",
+    "vue-router": "^4.5.0"
   }
 }
