@@ -54,30 +54,67 @@
 
 ## 🔐 配置 Secrets
 
-在 GitHub 仓库设置中添加以下 Secrets:
+### ⚠️ 重要提示
+
+**在配置 Secrets 之前,部署工作流会被跳过!** 这是正常的,不会影响代码检查和构建。
+
+### 启用部署功能
+
+1. **配置 Repository Variable**
+
+   进入 Settings → Secrets and variables → Actions → Variables 标签
+
+   添加变量:
+
+   ```
+   名称: ENABLE_DEPLOY
+   值: true
+   ```
+
+2. **添加 Secrets**
+
+   在 Secrets 标签中添加以下内容:
 
 ### 测试环境 Secrets
 
 ```
 TEST_SSH_PRIVATE_KEY    # 测试服务器 SSH 私钥
-TEST_REMOTE_HOST        # 测试服务器地址
-TEST_REMOTE_USER        # 测试服务器用户名
-TEST_REMOTE_TARGET      # 测试服务器部署目录
+TEST_REMOTE_HOST        # 测试服务器地址(如: test.example.com)
+TEST_REMOTE_USER        # 测试服务器用户名(如: deploy)
+TEST_REMOTE_TARGET      # 测试服务器部署目录(如: /var/www/test)
 ```
 
 ### 生产环境 Secrets
 
 ```
 PROD_SSH_PRIVATE_KEY    # 生产服务器 SSH 私钥
-PROD_REMOTE_HOST        # 生产服务器地址
-PROD_REMOTE_USER        # 生产服务器用户名
-PROD_REMOTE_TARGET      # 生产服务器部署目录
+PROD_REMOTE_HOST        # 生产服务器地址(如: example.com)
+PROD_REMOTE_USER        # 生产服务器用户名(如: deploy)
+PROD_REMOTE_TARGET      # 生产服务器部署目录(如: /var/www/html)
 ```
 
 ### 通知 Secrets (可选)
 
 ```
 SLACK_WEBHOOK           # Slack Webhook URL(用于部署通知)
+```
+
+### 📋 配置示例
+
+**示例值(仅供参考,请使用实际值):**
+
+```bash
+# 测试环境
+TEST_SSH_PRIVATE_KEY: -----BEGIN OPENSSH PRIVATE KEY-----...
+TEST_REMOTE_HOST: 192.168.1.100
+TEST_REMOTE_USER: deploy
+TEST_REMOTE_TARGET: /var/www/test-app
+
+# 生产环境
+PROD_SSH_PRIVATE_KEY: -----BEGIN OPENSSH PRIVATE KEY-----...
+PROD_REMOTE_HOST: example.com
+PROD_REMOTE_USER: deploy
+PROD_REMOTE_TARGET: /var/www/production-app
 ```
 
 ## 📝 配置步骤
@@ -106,11 +143,24 @@ chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
 ```
 
-### 3. 添加 GitHub Secrets
+### 3. 添加 GitHub Secrets 和 Variables
+
+**步骤 1: 添加 Variable (启用部署)**
 
 1. 进入仓库 Settings → Secrets and variables → Actions
+2. 点击 "Variables" 标签
+3. 点击 "New repository variable"
+4. 添加:
+   - Name: `ENABLE_DEPLOY`
+   - Value: `true`
+
+**步骤 2: 添加 Secrets (部署凭证)**
+
+1. 点击 "Secrets" 标签
 2. 点击 "New repository secret"
-3. 添加上述所有必需的 Secrets
+3. 按照上述列表添加所有必需的 Secrets
+
+**注意**: 如果不添加 `ENABLE_DEPLOY` 变量,部署工作流会自动跳过,只执行构建和测试
 
 ### 4. 配置环境变量(可选)
 
@@ -224,9 +274,42 @@ test:
 4. **回滚方案**: 准备快速回滚机制
 5. **监控告警**: 配置部署后的健康检查和告警
 
+## 🚦 工作流状态
+
+### 仅构建模式 (默认)
+
+如果未配置 `ENABLE_DEPLOY` 变量,工作流会:
+
+- ✅ 运行代码检查
+- ✅ 运行构建测试
+- ✅ 上传构建产物
+- ⏭️ 跳过部署步骤
+
+### 完整部署模式
+
+配置 `ENABLE_DEPLOY=true` 后,工作流会:
+
+- ✅ 运行代码检查
+- ✅ 运行构建测试
+- ✅ 上传构建产物
+- ✅ 自动部署到服务器
+- ✅ 发送部署通知
+
 ## 🐛 常见问题
 
-### 1. SSH 连接失败
+### 1. 部署工作流被跳过
+
+**原因**: 未配置 `ENABLE_DEPLOY` 变量或值不为 `true`
+
+**解决方案**:
+
+```bash
+# 在 GitHub 仓库中配置
+Settings → Secrets and variables → Actions → Variables
+添加: ENABLE_DEPLOY = true
+```
+
+### 2. SSH 连接失败
 
 **原因**: SSH 密钥配置错误或服务器防火墙限制
 

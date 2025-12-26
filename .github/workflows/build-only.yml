@@ -1,0 +1,62 @@
+name: Build Only
+
+# 仅构建,不部署(适用于还未配置部署服务器的情况)
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    name: 构建应用
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [development, test, production]
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 设置 pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: 获取 pnpm store 目录
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: 缓存 pnpm 依赖
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建 (${{ matrix.mode }})
+        run: pnpm run build:${{ matrix.mode }}
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.mode }}-${{ github.sha }}
+          path: apps/root/
+          retention-days: 30
+
+      - name: 构建成功通知
+        if: success()
+        run: |
+          echo "✅ ${{ matrix.mode }} 环境构建成功"
+          echo "📦 构建产物已上传,可在 Actions 页面下载"
