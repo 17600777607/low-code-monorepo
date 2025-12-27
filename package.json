@@ -1,0 +1,46 @@
+{
+  "name": "low-code-vue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve --mode development",
+    "dev:test": "vue-cli-service serve --mode test",
+    "dev:production": "vue-cli-service serve --mode production",
+    "build:dev": "vue-cli-service build --mode development",
+    "build:test": "vue-cli-service build --mode test",
+    "build:production": "vue-cli-service build --mode production",
+    "lint": "vue-cli-service lint",
+    "lint:fix": "vue-cli-service lint --fix",
+    "format": "prettier --write \"**/*.{js,ts,jsx,tsx,vue,json,css,scss,less,html,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,jsx,tsx,vue,json,css,scss,less,html,md}\""
+  },
+  "dependencies": {
+    "core-js": "^3.47.0",
+    "vue": "^3.5.26"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "@vue/cli-plugin-babel": "^5.0.9",
+    "@vue/cli-plugin-eslint": "^5.0.9",
+    "@vue/cli-plugin-typescript": "^5.0.9",
+    "@vue/cli-service": "^5.0.9",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.30.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not op_mini all"
+  ]
+}
