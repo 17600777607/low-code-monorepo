@@ -3,8 +3,7 @@ import { createPinia } from 'pinia'
 import App from '@/App.vue'
 import router from '@/router'
 import { startQiankun } from '@/qiankun'
-import 'normalize.css'
-import '@/assets/tailwind.css'
+import '@cwj/ui/assets/tailwind.css'
 
 const bootstrap = async () => {
   const app = createApp(App)

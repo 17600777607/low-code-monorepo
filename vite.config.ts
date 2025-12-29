@@ -50,11 +50,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
+        '@cwj/ui': resolve(__dirname, '@cwj/ui'),
       },
     },
     // 优化依赖预构建
     optimizeDeps: {
-      include: ['vue', 'vue-router', 'pinia', 'element-plus'],
+      include: ['vue', 'vue-router', 'pinia', 'element-plus', '@cwj/ui'],
     },
     // 开发服务器配置
     server: {

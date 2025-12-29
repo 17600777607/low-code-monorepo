@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@cwj/ui':
+        specifier: workspace:*
+        version: link:@cwj/ui
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -109,9 +112,15 @@ importers:
         specifier: ^3.2.1
         version: 3.2.1(typescript@5.9.3)
 
+  '@cwj/ui': {}
+
   package/account: {}
 
   package/admin: {}
+
+  package/designer: {}
+
+  package/renderer: {}
 
 packages:
 
