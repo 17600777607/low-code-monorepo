@@ -1,4 +1,4 @@
-<template>管理后台</template>
+<template>设计器</template>
 
 <script setup lang="ts"></script>
 

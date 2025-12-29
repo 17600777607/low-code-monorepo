@@ -1,5 +1,5 @@
 /**
- * 管理后台子应用入口
+ * 设计器子应用入口
  */
 import 'normalize.css'
 import './assets/tailwind.css'

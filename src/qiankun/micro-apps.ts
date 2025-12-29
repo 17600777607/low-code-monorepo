@@ -61,4 +61,32 @@ export const microApps: ExtendedMicroApp[] = [
       routerBase: '/admin',
     },
   },
+  {
+    title: '设计器',
+    description: '页面设计器',
+    icon: '🎨',
+    color: '#e6a23c',
+    enabled: true,
+    name: 'designer',
+    entry: '//localhost:5003',
+    container: '#designer-app-container',
+    activeRule: '/designer',
+    props: {
+      routerBase: '/designer',
+    },
+  },
+  {
+    title: '渲染器',
+    description: '页面渲染器',
+    icon: '🚀',
+    color: '#f56c6c',
+    enabled: true,
+    name: 'renderer',
+    entry: '//localhost:5004',
+    container: '#renderer-app-container',
+    activeRule: '/renderer',
+    props: {
+      routerBase: '/renderer',
+    },
+  },
 ]

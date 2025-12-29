@@ -1,4 +1,4 @@
-<template>管理后台</template>
+<template>渲染器</template>
 
 <script setup lang="ts"></script>
 

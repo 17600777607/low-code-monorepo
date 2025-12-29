@@ -1,27 +1,27 @@
 <template>
-  <div class="flex min-h-screen flex-col bg-gradient-to-br from-indigo-500 to-purple-600">
-    <header class="px-5 pb-10 pt-15 text-center text-white">
+  <div class="flex min-h-screen flex-col bg-linear-to-br from-indigo-500 to-purple-600">
+    <header class="px-5 pt-15 pb-10 text-center text-white">
       <h1 class="mb-4 text-5xl font-bold drop-shadow-md md:text-6xl">低代码平台 - 工作台</h1>
       <p class="m-0 text-lg opacity-90">微前端架构 | 模块化设计</p>
     </header>
 
     <div
-      class="mx-auto grid w-full max-w-screen-xl flex-1 content-center items-start gap-6 px-6 pb-15 md:grid-cols-2 lg:grid-cols-3"
+      class="mx-auto flex w-full max-w-7xl flex-1 flex-row flex-wrap content-center gap-6 px-6 pb-15"
     >
       <div
         v-for="app in microApps"
         :key="app.name"
-        class="flex cursor-pointer flex-col items-center rounded-2xl bg-white p-8 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+        :style="{ background: app.color || '#667eea' }"
+        class="flex w-[280px] flex-1 cursor-pointer flex-col items-center rounded-2xl bg-white p-8 text-center text-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-linear-to-br hover:from-indigo-50 hover:to-purple-100 hover:shadow-2xl"
         @click="navigateTo(app.activeRule as string)"
       >
         <div
-          class="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl text-4xl shadow-lg"
-          :style="{ background: app.color || '#667eea' }"
+          class="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-white text-4xl shadow-lg"
         >
           {{ app.icon }}
         </div>
-        <h3 class="mb-3 text-2xl font-semibold text-gray-800">{{ app.title }}</h3>
-        <p class="m-0 text-sm leading-relaxed text-gray-600">{{ app.description }}</p>
+        <h3 class="mb-3 text-2xl font-semibold text-white">{{ app.title }}</h3>
+        <p class="m-0 text-sm leading-relaxed text-white">{{ app.description }}</p>
       </div>
     </div>
 
