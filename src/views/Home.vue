@@ -1,27 +1,32 @@
 <template>
-  <div class="home-container">
-    <header class="header">
-      <h1>低代码平台 - 工作台</h1>
-      <p class="subtitle">微前端架构 | 模块化设计</p>
+  <div class="flex min-h-screen flex-col bg-gradient-to-br from-indigo-500 to-purple-600">
+    <header class="px-5 pb-10 pt-15 text-center text-white">
+      <h1 class="mb-4 text-5xl font-bold drop-shadow-md md:text-6xl">低代码平台 - 工作台</h1>
+      <p class="m-0 text-lg opacity-90">微前端架构 | 模块化设计</p>
     </header>
 
-    <div class="app-grid">
+    <div
+      class="mx-auto grid w-full max-w-screen-xl flex-1 content-center items-start gap-6 px-6 pb-15 md:grid-cols-2 lg:grid-cols-3"
+    >
       <div
         v-for="app in microApps"
         :key="app.name"
-        class="app-card"
+        class="flex cursor-pointer flex-col items-center rounded-2xl bg-white p-8 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
         @click="navigateTo(app.activeRule as string)"
       >
-        <div class="app-icon">
+        <div
+          class="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl text-4xl shadow-lg"
+          :style="{ background: app.color || '#667eea' }"
+        >
           {{ app.icon }}
         </div>
-        <h3 class="app-title">{{ app.title }}</h3>
-        <p class="app-description">{{ app.description }}</p>
+        <h3 class="mb-3 text-2xl font-semibold text-gray-800">{{ app.title }}</h3>
+        <p class="m-0 text-sm leading-relaxed text-gray-600">{{ app.description }}</p>
       </div>
     </div>
 
-    <footer class="footer">
-      <p>© 2025 低代码平台 | 所有模块已加载</p>
+    <footer class="px-6 py-6 text-center text-sm text-white opacity-80">
+      <p class="m-0">© 2025 低代码平台 | 所有模块已加载</p>
     </footer>
   </div>
 </template>
@@ -38,111 +43,3 @@ const navigateTo = (path: string) => {
   router.push(path)
 }
 </script>
-
-<style scoped>
-.home-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.header {
-  text-align: center;
-  padding: 60px 20px 40px;
-  color: white;
-}
-
-.header h1 {
-  font-size: 48px;
-  font-weight: 700;
-  margin: 0 0 16px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.subtitle {
-  font-size: 18px;
-  opacity: 0.9;
-  margin: 0;
-}
-
-.app-grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 24px 60px;
-  align-items: start;
-  align-content: center;
-}
-
-.app-card {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.app-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-.app-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.app-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0 0 12px;
-  color: #333;
-}
-
-.app-description {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.footer {
-  text-align: center;
-  padding: 24px;
-  color: white;
-  opacity: 0.8;
-  font-size: 14px;
-}
-
-.footer p {
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 32px;
-  }
-
-  .app-grid {
-    grid-template-columns: 1fr;
-    padding: 0 16px 40px;
-  }
-}
-</style>

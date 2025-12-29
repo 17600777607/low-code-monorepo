@@ -2,7 +2,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from '@/App.vue'
 import router from '@/router'
-import startQiankun from '@/qiankun'
+import { startQiankun } from '@/qiankun'
+import '@/assets/tailwind.css'
 
 const bootstrap = async () => {
   const app = createApp(App)
@@ -11,14 +12,12 @@ const bootstrap = async () => {
   // 使用路由
   app.use(router)
   app.mount('#app')
-  
+
   // 等待路由准备就绪后再启动 qiankun
   await router.isReady()
-  
+
   // 延迟启动 qiankun，确保容器组件有机会挂载
-  setTimeout(() => {
-    startQiankun()
-  }, 100)
+  startQiankun()
 }
 
 bootstrap()

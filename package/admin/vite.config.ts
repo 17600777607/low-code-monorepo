@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
@@ -6,10 +6,13 @@ import compression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 import viteCompression from 'vite-plugin-compression'
 import qiankun from 'vite-plugin-qiankun'
-
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import consola from 'consola'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd())
+  consola.ready('[admin] Vite 配置加载中...', { mode })
   // 获取 monorepo 根目录（当前目录向上两级）
   const rootDir = resolve(__dirname, '../..')
 
@@ -20,6 +23,15 @@ export default defineConfig(({ mode }) => {
       // qiankun 子应用配置
       qiankun('admin', {
         useDevMode: true,
+      }),
+      // Element Plus 按需导入
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+        dts: resolve(__dirname, 'src/types/auto-imports.d.ts'),
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+        dts: resolve(__dirname, 'src/types/components.d.ts'),
       }),
       // Gzip 压缩
       compression({
@@ -56,11 +68,11 @@ export default defineConfig(({ mode }) => {
       cors: true, // 允许跨域
       origin: 'http://localhost:5002', // qiankun 需要明确的 origin
       proxy: {
-        '/api': {
-          target: env.VITE_APP_BASE_API,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
+        // '/api': {
+        //   target: env.VITE_APP_BASE_API,
+        //   changeOrigin: true,
+        //   rewrite: (path) => path.replace(/^\/api/, ''),
+        // },
       },
     },
     build: {
@@ -84,7 +96,7 @@ export default defineConfig(({ mode }) => {
           // chunk 文件输出到 js 目录
           chunkFileNames: 'js/[name]-[hash].js',
           // 静态资源输出到 assets 目录
-          assetFileNames: (assetInfo) => {
+          assetFileNames: assetInfo => {
             // CSS 文件输出到 css 目录
             if (assetInfo.name?.endsWith('.css')) {
               return 'css/[name]-[hash].[ext]'

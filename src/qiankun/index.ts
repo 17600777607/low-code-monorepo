@@ -1,13 +1,16 @@
 import { registerMicroApps, start } from 'qiankun'
 import { qiankunConfig } from '@/qiankun/config'
-import { microApps } from '@/qiankun/micro-apps'
+import { microApps, type ExtendedMicroApp } from '@/qiankun/micro-apps'
 import { lifecycles } from '@/qiankun/lifecycle'
 import consola from 'consola'
 let qiankunStarted = false
+const findMicroApp = (name: string): ExtendedMicroApp | undefined => {
+  return microApps.find(app => app.name === name)
+}
 
 const startQiankun = () => {
   if (qiankunStarted) {
-    consola.info('[qiankun] 已经启动，跳过重复启动')
+    consola.box('[qiankun] 已经启动，跳过重复启动')
     return
   }
 
@@ -21,4 +24,4 @@ const startQiankun = () => {
   consola.success('[qiankun] 启动成功')
 }
 
-export default startQiankun
+export { startQiankun, findMicroApp }

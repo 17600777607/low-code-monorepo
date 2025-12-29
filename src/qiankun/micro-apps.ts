@@ -15,8 +15,12 @@ export interface MicroAppMetadata {
   description?: string
   /** 微应用图标 */
   icon?: string
+  /** 图标背景色 */
+  color?: string
   /** 是否启用 */
   enabled?: boolean
+  /** 微应用容器选择器 */
+  container: string
 }
 
 /**
@@ -33,6 +37,7 @@ export const microApps: ExtendedMicroApp[] = [
     title: '账号中心',
     description: '用户账号管理中心',
     icon: '👤',
+    color: '#667eea',
     enabled: true,
     name: 'account',
     entry: '//localhost:5001',
@@ -46,6 +51,7 @@ export const microApps: ExtendedMicroApp[] = [
     title: '管理后台',
     description: '系统管理后台',
     icon: '⚙️',
+    color: '#764ba2',
     enabled: true,
     name: 'admin',
     entry: '//localhost:5002',

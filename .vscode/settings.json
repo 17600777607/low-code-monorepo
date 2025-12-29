@@ -1,15 +1,47 @@
 {
+  // CSS 配置
+  "css.validate": true,
+  "css.lint.unknownAtRules": "ignore",
+
+  // SCSS 配置
+  "scss.validate": true,
+  "scss.lint.unknownAtRules": "ignore",
+
+  // Less 配置
+  "less.validate": true,
+  "less.lint.unknownAtRules": "ignore",
+
+  // Tailwind CSS IntelliSense 配置
+  "tailwindCSS.experimental.classRegex": [
+    ["class:\\s*?[\"'`]([^\"'`]*).*?[\"'`]", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["className:\\s*?[\"'`]([^\"'`]*).*?[\"'`]", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "vue": "html",
+    "vue-html": "html",
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+
   // 编辑器配置
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.quickSuggestions": {
+    "strings": true
+  },
 
   // ESLint 配置
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
 
   // 文件关联
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // 格式化器配置
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -20,6 +52,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
@@ -38,5 +73,7 @@
     "**/apps": true,
     "**/*.log": true
   },
-  "cSpell.words": ["qiankun", "lifecycles", "VITE", "consola"]
+
+  // 拼写检查
+  "cSpell.words": ["qiankun", "lifecycles", "VITE", "consola", "unplugin"]
 }

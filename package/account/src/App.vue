@@ -1,6 +1,4 @@
-<template>
-  <div id="app">账号中心</div>
-</template>
+<template>账号中心</template>
 
 <script setup lang="ts"></script>
 

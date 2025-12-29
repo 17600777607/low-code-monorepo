@@ -15,20 +15,11 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/account',
-    name: 'Account',
-    component: () => import('../views/AccountContainer.vue'),
+    path: '/:appName',
+    name: 'MicroAppContainer',
+    component: () => import('../views/MicroAppContainerView.vue'),
     meta: {
-      title: '账号中心',
-      isMicroApp: true, // 标记为微应用路由
-    },
-  },
-  {
-    path: '/admin',
-    name: 'Admin',
-    component: () => import('../views/AdminContainer.vue'),
-    meta: {
-      title: '管理后台',
+      title: '微应用',
       isMicroApp: true, // 标记为微应用路由
     },
   },

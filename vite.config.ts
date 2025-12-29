@@ -5,6 +5,9 @@ import { resolve } from 'path'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 import consola from 'consola'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,6 +17,15 @@ export default defineConfig(({ mode }) => {
       vue(),
       // 支持 Vue JSX/TSX
       vueJsx(),
+      // Element Plus 按需导入
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+        dts: resolve(__dirname, 'src/types/auto-imports.d.ts'),
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+        dts: resolve(__dirname, 'src/types/components.d.ts'),
+      }),
       // Gzip 压缩
       viteCompression({
         verbose: true, // 输出压缩成功信息
@@ -38,7 +50,7 @@ export default defineConfig(({ mode }) => {
     },
     // 优化依赖预构建
     optimizeDeps: {
-      include: ['vue', 'vue-router', 'pinia'],
+      include: ['vue', 'vue-router', 'pinia', 'element-plus'],
     },
     // 开发服务器配置
     server: {

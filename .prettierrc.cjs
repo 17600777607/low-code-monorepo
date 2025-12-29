@@ -30,4 +30,7 @@ module.exports = {
   // JSX
   jsxSingleQuote: false, // JSX 使用双引号
   bracketSameLine: false, // JSX 标签的 > 另起一行
+
+  // Tailwind CSS
+  plugins: ['prettier-plugin-tailwindcss'],
 }

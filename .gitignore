@@ -25,8 +25,11 @@ yarn-error.log*
 
 # Cache
 .cache
-.eslintcache
 *.tsbuildinfo
+
+# Auto-generated files
+**/auto-imports.d.ts
+**/components.d.ts
 
 # Testing
 coverage
@@ -40,3 +43,7 @@ coverage
 *.pid
 *.seed
 *.pid.lock
+
+# Types
+types/components.d.ts
+types/auto-imports.d.ts

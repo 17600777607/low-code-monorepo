@@ -16,8 +16,10 @@ let app: VueApp | null = null
 function render(props: QiankunProps = {}) {
   const { container } = props
   app = createApp(App)
-  const containerEl = container ? container.querySelector('#app') : document.getElementById('app')
-  app.mount(containerEl || '#app')
+  const containerEl = container
+    ? container.querySelector('#admin-app')
+    : document.getElementById('admin-app')
+  app.mount(containerEl || '#admin-app')
 }
 
 /**

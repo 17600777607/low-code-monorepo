@@ -1,15 +1,11 @@
 <template>
-  <div class="container">
-    <div class="back-button" @click="handleGoBack">← 返回工作台</div>
-    <!-- qiankun 微应用容器 -->
-    <div :id="containerId" class="micro-app-container"></div>
-  </div>
+  <!-- qiankun 微应用容器 -->
+  <div :id="containerId" class="micro-app-container"></div>
 </template>
 
 <script setup lang="ts">
 import consola from 'consola'
 import { onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
 
 /**
  * 组件属性定义
@@ -27,8 +23,6 @@ interface Props {
 interface Emits {
   /** 容器准备就绪事件 */
   (e: 'ready', containerId: string): void
-  /** 返回事件 */
-  (e: 'back'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,16 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<Emits>()
-
-const router = useRouter()
-
-/**
- * 返回工作台
- */
-const handleGoBack = () => {
-  emit('back')
-  router.push('/')
-}
 
 /**
  * 组件挂载后确保容器存在
@@ -76,27 +60,6 @@ onBeforeUnmount(() => {
 .container {
   min-height: 100vh;
   background: #f5f5f5;
-}
-
-.back-button {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  padding: 12px 24px;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  font-size: 14px;
-  color: #333;
-}
-
-.back-button:hover {
-  background: #667eea;
-  color: white;
-  transform: translateX(-4px);
 }
 
 .micro-app-container {
