@@ -35,11 +35,15 @@ export default defineConfig(({ mode }) => {
         ext: '.gz', // 压缩文件扩展名
         deleteOriginFile: false, // 压缩后是否删除原文件
       }),
-      // 产物分析 - 在终端输出
+      // 产物分析 - 仅在终端输出,不生成文件
       visualizer({
-        template: 'list', // 使用列表模式,在终端输出
+        template: 'list', // 使用列表模式
         gzipSize: true, // 显示 gzip 压缩后的大小
         brotliSize: true, // 显示 brotli 压缩后的大小
+        filename: 'stats.html', // 文件名(不会生成,因为使用 stdout)
+        open: false, // 不自动打开浏览器
+        projectRoot: process.cwd(), // 项目根目录
+        emitFile: false, // 不生成文件,只输出到终端
       }),
     ],
     // 配置路径别名

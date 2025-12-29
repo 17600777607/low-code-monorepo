@@ -9,6 +9,7 @@
     "dev:production": "vite --mode production --port 5003",
     "build:development": "vue-tsc -b && vite build --mode development",
     "build:test": "vue-tsc -b && vite build --mode test",
+    "build:production": "vue-tsc -b && vite build --mode production",
     "preview": "vite preview --port 6003",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\""
