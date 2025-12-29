@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src'),
+        '@admin': resolve(__dirname, 'src'),
       },
     },
     server: {

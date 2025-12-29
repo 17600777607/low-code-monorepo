@@ -6,7 +6,7 @@ import type { QiankunProps } from 'vite-plugin-qiankun/dist/helper'
 import type { App as VueApp } from 'vue'
 import { createApp } from 'vue'
 import consola from 'consola'
-import App from '@/App.vue'
+import App from '@renderer/App.vue'
 
 let app: VueApp | null = null
 

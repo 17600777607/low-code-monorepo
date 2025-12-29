@@ -1,3 +1,12 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    /* 路径别名 - 补充当前包的别名 */
+    "baseUrl": ".",
+    "paths": {
+      "@admin/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist"]
 }
