@@ -1,19 +1,33 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
-import viteCompression from 'vite-plugin-compression'
+import compression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
-import consola from 'consola'
+import viteCompression from 'vite-plugin-compression'
+import qiankun from 'vite-plugin-qiankun'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  consola.ready('Vite 配置加载中...', { mode })
+  const env = loadEnv(mode, process.cwd())
+  // 获取 monorepo 根目录（当前目录向上两级）
+  const rootDir = resolve(__dirname, '../..')
+
   return {
     plugins: [
       vue(),
-      // 支持 Vue JSX/TSX
       vueJsx(),
+      // qiankun 子应用配置
+      qiankun('account', {
+        useDevMode: true,
+      }),
+      // Gzip 压缩
+      compression({
+        algorithm: 'gzip',
+        ext: '.gz',
+        threshold: 10240, // 大于 10KB 才压缩
+        deleteOriginFile: false,
+      }),
       // Gzip 压缩
       viteCompression({
         verbose: true, // 输出压缩成功信息
@@ -30,26 +44,28 @@ export default defineConfig(({ mode }) => {
         brotliSize: true, // 显示 brotli 压缩后的大小
       }),
     ],
-    // 配置路径别名
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
       },
     },
-    // 优化依赖预构建
-    optimizeDeps: {
-      include: ['vue', 'vue-router', 'pinia'],
-    },
-    // 开发服务器配置
     server: {
-      port: 5173,
+      port: 5001, // 账号中心固定端口
       host: true,
+      open: false, // 作为子应用，不自动打开
       cors: true, // 允许跨域
+      origin: 'http://localhost:5001', // qiankun 需要明确的 origin
+      proxy: {
+        '/api': {
+          target: env.VITE_APP_BASE_API,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
     },
-    // 构建输出到 apps/root 目录
     build: {
-      outDir: resolve(__dirname, './apps/root'),
-      emptyOutDir: true, // 只清空 root 目录
+      outDir: resolve(rootDir, 'apps/account'),
+      emptyOutDir: true, // 只清空 account 目录
       target: 'esnext',
       // 完整的 source map
       sourcemap: true,
@@ -61,7 +77,6 @@ export default defineConfig(({ mode }) => {
           drop_debugger: true, // 删除 debugger
         },
       },
-      // 资源目录拆分
       rollupOptions: {
         output: {
           // JS 文件输出到 js 目录
@@ -69,7 +84,7 @@ export default defineConfig(({ mode }) => {
           // chunk 文件输出到 js 目录
           chunkFileNames: 'js/[name]-[hash].js',
           // 静态资源输出到 assets 目录
-          assetFileNames: assetInfo => {
+          assetFileNames: (assetInfo) => {
             // CSS 文件输出到 css 目录
             if (assetInfo.name?.endsWith('.css')) {
               return 'css/[name]-[hash].[ext]'

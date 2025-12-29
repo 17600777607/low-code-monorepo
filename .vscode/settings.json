@@ -37,5 +37,6 @@
     "**/build": true,
     "**/apps": true,
     "**/*.log": true
-  }
+  },
+  "cSpell.words": ["qiankun", "lifecycles", "VITE", "consola"]
 }

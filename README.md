@@ -14,7 +14,7 @@
 
 - 🎨 **可视化设计器** - 拖拽式组件编排,实时预览
 - 🚀 **多端渲染器** - 基于 AST 的动态渲染引擎
-- 🏗️ **微前端架构** - Vite 7 + 模块联邦
+- 🏗️ **微前端架构** - qiankun 微前端方案
 - 🔐 **统一认证** - Cookie + XHR 拦截,自动跳转
 - 📦 **Monorepo 管理** - pnpm Workspace
 - 💎 **TypeScript** - 完整的类型支持
@@ -78,33 +78,38 @@ pnpm install
 ### 本地开发
 
 ```bash
-# 开发环境
-pnpm run dev
+# 同时启动主应用和子应用（推荐）
+pnpm run dev:all
 
-# 测试环境
-pnpm run dev:test
+# 或分别启动
+pnpm run dev              # 启动主应用
+pnpm run dev:account      # 启动账号中心子应用
 
-# 生产环境
-pnpm run dev:production
+# 其他环境
+pnpm run dev:test         # 测试环境
+pnpm run dev:production   # 生产环境
 
-# 启动子应用
-pnpm --filter account dev
+# 启动其他子应用
 pnpm --filter designer dev
 pnpm --filter renderer dev
 pnpm --filter admin dev
 ```
 
+**注意**: 使用 qiankun 微前端架构时，需要同时启动主应用和子应用才能正常访问子应用功能。
+
 ### 构建生产
 
 ```bash
-# 开发环境构建
-pnpm run build:development
+# 构建所有应用（推荐）
+pnpm run build:all
 
-# 测试环境构建
-pnpm run build:test
+# 或分别构建
+pnpm run build:production     # 构建主应用
+pnpm run build:account        # 构建账号中心
 
-# 生产环境构建
-pnpm run build:production
+# 其他环境
+pnpm run build:development    # 开发环境构建
+pnpm run build:test           # 测试环境构建
 
 # 构建指定应用
 pnpm --filter designer build  # 设计器
@@ -116,6 +121,8 @@ pnpm --filter renderer build  # 渲染器
 ### 核心文档
 
 - [架构设计](./docs/架构设计.md) - 微前端架构、应用通信、技术选型
+- [qiankun 微前端配置指南](./docs/qiankun微前端配置指南.md) - ⚡ qiankun 微前端详细配置
+- [qiankun 最佳实践](./docs/qiankun最佳实践.md) - 🌟 代码组织、性能优化、错误处理
 - [开发指南](./docs/开发指南.md) - 开发流程、调试方法、常见问题
 - [部署文档](./docs/部署文档.md) - 构建流程、Nginx 配置、服务器部署
 - [快速配置部署](./docs/快速配置部署.md) - ⚡ 3 步启用自动部署
@@ -141,29 +148,28 @@ pnpm --filter renderer build  # 渲染器
 
 | 应用     | 本地开发              | 生产环境                     |
 | -------- | --------------------- | ---------------------------- |
-| 主应用   | http://localhost:3000 | https://xx.xxx.com           |
-| 账号中心 | http://localhost:3001 | https://xx.xxx.com/account/  |
-| 设计器   | http://localhost:3002 | https://xx.xxx.com/designer/ |
-| 渲染器   | http://localhost:3003 | https://xx.xxx.com/renderer/ |
-| 管理后台 | http://localhost:3004 | https://xx.xxx.com/admin/    |
+| 主应用   | http://localhost:5173 | https://xx.xxx.com           |
+| 账号中心 | http://localhost:5001 | https://xx.xxx.com/account/  |
+| 设计器   | http://localhost:5002 | https://xx.xxx.com/designer/ |
+| 渲染器   | http://localhost:5003 | https://xx.xxx.com/renderer/ |
+| 管理后台 | http://localhost:5004 | https://xx.xxx.com/admin/    |
 
 ## 🔧 可用脚本
 
 ```bash
 # 开发
-pnpm run dev                    # 启动开发环境
+pnpm run dev                    # 启动主应用
+pnpm run dev:account            # 启动账号中心子应用
+pnpm run dev:all                # 同时启动主应用和子应用
 pnpm run dev:test               # 启动测试环境
 pnpm run dev:production         # 启动生产环境
 
 # 构建
+pnpm run build:production       # 构建主应用
+pnpm run build:account          # 构建账号中心
+pnpm run build:all              # 构建所有应用
 pnpm run build:development      # 构建开发环境
 pnpm run build:test             # 构建测试环境
-pnpm run build:production       # 构建生产环境
-
-# 预览
-pnpm run preview:development    # 预览开发环境构建
-pnpm run preview:test           # 预览测试环境构建
-pnpm run preview:production     # 预览生产环境构建
 
 # 代码质量
 pnpm run lint                   # ESLint 代码检查并自动修复
@@ -191,3 +197,11 @@ MIT
 ## 📮 联系方式
 
 如有问题或建议,请提交 [Issue](https://github.com/your-repo/issues)
+
+| 🚀 [qiankun] 框架层生命周期
+|- 正在加载微应用: account
+|- 正在挂载微应用: account
+|-- [account] 子应用内部生命周期
+|---- [account] bootstrap
+|---- [account] mount
+|-- 微应用挂载成功: account

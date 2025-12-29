@@ -6,8 +6,13 @@
     </header>
 
     <div class="app-grid">
-      <div v-for="app in apps" :key="app.path" class="app-card" @click="navigateTo(app.path)">
-        <div class="app-icon" :style="{ backgroundColor: app.color }">
+      <div
+        v-for="app in microApps"
+        :key="app.name"
+        class="app-card"
+        @click="navigateTo(app.activeRule as string)"
+      >
+        <div class="app-icon">
           {{ app.icon }}
         </div>
         <h3 class="app-title">{{ app.title }}</h3>
@@ -23,21 +28,8 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-
+import { microApps } from '@/qiankun/micro-apps'
 const router = useRouter()
-
-/**
- * 应用列表配置
- */
-const apps = [
-  {
-    title: '账号中心',
-    description: '统一登录、注册、找回密码等功能',
-    path: '/account',
-    icon: '👤',
-    color: '#4CAF50',
-  },
-]
 
 /**
  * 导航到指定应用
@@ -83,6 +75,8 @@ const navigateTo = (path: string) => {
   width: 100%;
   margin: 0 auto;
   padding: 0 24px 60px;
+  align-items: start;
+  align-content: center;
 }
 
 .app-card {

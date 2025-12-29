@@ -1,7 +1,7 @@
 <template>
   <MicroAppContainer
-    container-id="account-app-container"
-    app-name="AccountContainer"
+    container-id="admin-app-container"
+    app-name="AdminContainer"
     @ready="handleContainerReady"
   />
 </template>
@@ -15,10 +15,10 @@ import MicroAppContainer from '@/components/MicroAppContainer.vue'
  * @param containerId - 容器 ID
  */
 const handleContainerReady = (containerId: string) => {
-  consola.info(`[AccountContainer] 微应用容器已准备就绪: ${containerId}`)
+  consola.info(`[AdminContainer] 微应用容器已准备就绪: ${containerId}`)
 }
 </script>
 
 <style scoped>
-/* 可以在这里添加 Account 容器特有的样式 */
+/* 可以在这里添加 Admin 容器特有的样式 */
 </style>

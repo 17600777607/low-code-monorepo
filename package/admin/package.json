@@ -1,15 +1,15 @@
 {
-  "name": "@cwj/account",
+  "name": "LowCode/admin",
   "version": "1.0.0",
-  "description": "账号中心 - 统一登录、注册、找回密码等功能",
+  "description": "管理后台 - 系统管理、用户管理、权限管理等功能",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development --port 5001",
-    "dev:test": "vite --mode test --port 5001",
-    "dev:production": "vite --mode production --port 5001",
+    "dev": "vite --mode development --port 5002",
+    "dev:test": "vite --mode test --port 5002",
+    "dev:production": "vite --mode production --port 5002",
     "build:development": "vue-tsc -b && vite build --mode development",
     "build:test": "vue-tsc -b && vite build --mode test",
-    "preview": "vite preview --port 6001",
+    "preview": "vite preview --port 6002",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\""
   }

@@ -5,7 +5,8 @@ import { resolve } from 'path'
 import compression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 import viteCompression from 'vite-plugin-compression'
-import federation from '@originjs/vite-plugin-federation'
+import qiankun from 'vite-plugin-qiankun'
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
@@ -16,14 +17,9 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       vueJsx(),
-      // 模块联邦配置 - 暴露账号中心应用
-      federation({
-        name: 'accountApp', // 远程模块名称
-        filename: 'accountAppEntry.js', // 入口文件名
-        exposes: {
-          './App': './src/App.vue', // 暴露主应用组件
-        },
-        shared: ['vue', 'vue-router'], // 共享依赖
+      // qiankun 子应用配置
+      qiankun('admin', {
+        useDevMode: true,
       }),
       // Gzip 压缩
       compression({
@@ -54,10 +50,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 5001, // 账号中心固定端口
+      port: 5002, // 管理后台固定端口
       host: true,
-      open: false, // 作为远程模块，不自动打开
+      open: false, // 作为子应用，不自动打开
       cors: true, // 允许跨域
+      origin: 'http://localhost:5002', // qiankun 需要明确的 origin
       proxy: {
         '/api': {
           target: env.VITE_APP_BASE_API,
@@ -67,14 +64,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: resolve(rootDir, 'apps/account'),
-      emptyOutDir: true, // 只清空 account 目录
-      target: 'esnext', // 模块联邦需要
+      outDir: resolve(rootDir, 'apps/admin'),
+      emptyOutDir: true, // 只清空 admin 目录
+      target: 'esnext',
       // 完整的 source map
       sourcemap: true,
       // CSS 和 JS 压缩
       minify: 'terser',
-      cssCodeSplit: false, // 模块联邦建议关闭 CSS 代码分割
       terserOptions: {
         compress: {
           drop_console: true, // 删除 console

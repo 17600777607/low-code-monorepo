@@ -20,6 +20,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/AccountContainer.vue'),
     meta: {
       title: '账号中心',
+      isMicroApp: true, // 标记为微应用路由
+    },
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/AdminContainer.vue'),
+    meta: {
+      title: '管理后台',
+      isMicroApp: true, // 标记为微应用路由
     },
   },
 ]
@@ -30,7 +40,7 @@ const router = createRouter({
 })
 
 // 路由守卫 - 设置页面标题
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title as string
   }

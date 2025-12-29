@@ -1,0 +1,113 @@
+{
+  "Vue 3 Component with TypeScript": {
+    "prefix": "v3ts",
+    "body": [
+      "<template>",
+      "  <div class=\"${1:component-name}\">",
+      "    ${2:<!-- 组件内容 -->}",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "${3:// 组件逻辑}",
+      "</script>",
+      "",
+      "<style scoped>",
+      ".${1:component-name} {",
+      "  ${4:/* 样式 */}",
+      "}",
+      "</style>",
+      ""
+    ],
+    "description": "创建 Vue 3 TypeScript 组件模板"
+  },
+  "Vue 3 Component with Props": {
+    "prefix": "v3props",
+    "body": [
+      "<template>",
+      "  <div>{{ ${1:propName} }}</div>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "interface Props {",
+      "  ${1:propName}: ${2:string}",
+      "}",
+      "",
+      "const props = defineProps<Props>()",
+      "</script>",
+      ""
+    ],
+    "description": "创建带 Props 的 Vue 3 组件"
+  },
+  "Vue 3 Component with Emits": {
+    "prefix": "v3emits",
+    "body": [
+      "<template>",
+      "  <div @click=\"handleClick\">",
+      "    ${1:<!-- 内容 -->}",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "interface Emits {",
+      "  (e: '${2:eventName}', value: ${3:string}): void",
+      "}",
+      "",
+      "const emit = defineEmits<Emits>()",
+      "",
+      "const handleClick = () => {",
+      "  emit('${2:eventName}', ${4:'value'})",
+      "}",
+      "</script>",
+      ""
+    ],
+    "description": "创建带 Emits 的 Vue 3 组件"
+  },
+  "Vue 3 Composable": {
+    "prefix": "v3composable",
+    "body": [
+      "import { ref, computed } from 'vue'",
+      "",
+      "export function use${1:Name}() {",
+      "  const ${2:state} = ref(${3:initialValue})",
+      "",
+      "  const ${4:computedValue} = computed(() => {",
+      "    return ${2:state}.value",
+      "  })",
+      "",
+      "  const ${5:method} = () => {",
+      "    ${6:// 方法实现}",
+      "  }",
+      "",
+      "  return {",
+      "    ${2:state},",
+      "    ${4:computedValue},",
+      "    ${5:method}",
+      "  }",
+      "}",
+      ""
+    ],
+    "description": "创建 Vue 3 Composable"
+  },
+  "TypeScript Interface": {
+    "prefix": "tsinterface",
+    "body": [
+      "interface ${1:InterfaceName} {",
+      "  ${2:property}: ${3:string}",
+      "}",
+      ""
+    ],
+    "description": "创建 TypeScript 接口"
+  },
+  "TypeScript Type": {
+    "prefix": "tstype",
+    "body": [
+      "type ${1:TypeName} = {",
+      "  ${2:property}: ${3:string}",
+      "}",
+      ""
+    ],
+    "description": "创建 TypeScript 类型"
+  }
+}
+
