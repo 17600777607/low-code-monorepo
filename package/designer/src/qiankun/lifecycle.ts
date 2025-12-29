@@ -16,6 +16,7 @@ let app: VueApp | null = null
 function render(props: QiankunProps = {}) {
   const { container } = props
   app = createApp(App)
+
   const containerEl = container
     ? container.querySelector('#designer-app')
     : document.getElementById('designer-app')

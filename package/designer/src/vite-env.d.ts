@@ -11,3 +11,12 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+/**
+ * 全局类型声明
+ */
+declare global {
+  interface DragEvent extends MouseEvent {
+    readonly dataTransfer: DataTransfer | null
+  }
+}
