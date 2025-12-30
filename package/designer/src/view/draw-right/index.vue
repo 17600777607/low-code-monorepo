@@ -9,7 +9,15 @@
             :selected-component="selectedComponent"
             @update-prop="handleUpdateProp"
             @update-children="handleUpdateChildren"
-            @remove-selected-component="handleRemoveSelectedComponent"
+          />
+        </el-tab-pane>
+
+        <!-- 组件配置 Tab -->
+        <el-tab-pane label="组件配置" name="component">
+          <ComponentConfig
+            :selected-component="selectedComponent"
+            @update-prop="handleUpdateProp"
+            @update-children="handleUpdateChildren"
           />
         </el-tab-pane>
 
@@ -24,23 +32,14 @@
     <div v-else class="flex flex-1 items-center justify-center">
       <el-empty description="请在画布中选择一个组件" :image-size="100" />
     </div>
-
-    <!-- 生成的代码预览 -->
-    <div v-if="generatedCode" class="border-t border-gray-200 px-6 py-4">
-      <el-divider content-position="left">生成的代码</el-divider>
-      <el-scrollbar height="200px">
-        <pre
-          class="mt-2 mb-0 overflow-x-auto rounded bg-gray-800 p-3 text-xs leading-relaxed text-gray-300"
-          >{{ generatedCode }}</pre
-        >
-      </el-scrollbar>
-    </div>
   </aside>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { BasicConfig, AdvancedConfig } from './components'
+import BasicConfig from './components/BasicConfig.vue'
+import ComponentConfig from './components/ComponentConfig.vue'
+import AdvancedConfig from './components/AdvancedConfig.vue'
 import type { CanvasComponent } from '../draw-center/index.vue'
 
 // Props
@@ -71,11 +70,6 @@ function handleUpdateProp(key: string, value: any) {
 // 更新子内容
 function handleUpdateChildren(value: string) {
   emit('updateChildren', value)
-}
-
-// 删除选中的组件
-function handleRemoveSelectedComponent() {
-  emit('removeSelectedComponent')
 }
 </script>
 

@@ -8,13 +8,7 @@
 
       <!-- AST Tab -->
       <el-tab-pane label="AST" name="ast">
-        <ASTPanel
-          :ast-stats="astStats"
-          :ast-text="astText"
-          @parse-to-a-s-t="handleParseToAST"
-          @generate-code="handleGenerateCode"
-          @clear-canvas="handleClearCanvas"
-        />
+        <ASTPanel :ast-stats="astStats" :ast-text="astText" />
       </el-tab-pane>
     </el-tabs>
   </aside>
@@ -38,7 +32,6 @@ defineProps<Props>()
 // Emits
 const emit = defineEmits<{
   dragStart: [event: globalThis.DragEvent, comp: ComponentDef]
-  parseToAST: []
   generateCode: []
   clearCanvas: []
 }>()
@@ -50,21 +43,6 @@ const activeTab = ref('components')
 function handleDragStart(event: globalThis.DragEvent, comp: ComponentDef) {
   emit('dragStart', event, comp)
 }
-
-// 解析为 AST
-function handleParseToAST() {
-  emit('parseToAST')
-}
-
-// 生成代码
-function handleGenerateCode() {
-  emit('generateCode')
-}
-
-// 清空画布
-function handleClearCanvas() {
-  emit('clearCanvas')
-}
 </script>
 
 <style scoped>
@@ -74,5 +52,8 @@ function handleClearCanvas() {
 :deep(.el-tabs__content) {
   flex: 1;
   overflow-y: auto;
+}
+:deep(.el-tab-pane) {
+  height: 100%;
 }
 </style>

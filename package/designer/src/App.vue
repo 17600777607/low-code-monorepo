@@ -1,14 +1,7 @@
 <template>
   <div class="flex h-screen overflow-hidden bg-gray-50">
     <!-- 左侧：组件库 -->
-    <DrawLeft
-      :ast-stats="astStats"
-      :ast-text="astText"
-      @drag-start="handleDragStart"
-      @parse-to-a-s-t="parseToAST"
-      @generate-code="generateCode"
-      @clear-canvas="clearCanvas"
-    />
+    <DrawLeft :ast-stats="astStats" :ast-text="astText" @drag-start="handleDragStart" />
 
     <!-- 中间：设计面板 -->
     <DrawCenter
@@ -32,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
   createParser,
@@ -41,25 +34,14 @@ import {
   getDepth,
   findAllNodes,
   isElementNode,
-  type ComponentConfig,
 } from './ast/index'
+import type { ComponentConfig } from './types/componentsTypes'
+import type { ElementNode } from './ast/types'
+import { NodeType } from './ast/types'
 import DrawLeft from './view/draw-left/index.vue'
 import DrawCenter from './view/draw-center/index.vue'
 import DrawRight from './view/draw-right/index.vue'
 import type { CanvasComponent } from './view/draw-center/index.vue'
-
-/**
- * 组件定义接口
- */
-interface ComponentDef {
-  tag: string
-  label: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  defaultProps: Record<string, any>
-  defaultChildren: string
-}
 
 // 画布组件列表
 const canvasComponents = ref<CanvasComponent[]>([])
@@ -86,11 +68,59 @@ const astStats = ref({
   elementCount: 0,
 })
 
+/**
+ * 实时更新 AST
+ * 监听画布组件变化,自动解析并更新 AST 结构
+ */
+watch(
+  canvasComponents,
+  newComponents => {
+    if (newComponents.length === 0) {
+      // 画布为空时清空 AST
+      astText.value = ''
+      astStats.value = {
+        totalNodes: 0,
+        depth: 0,
+        elementCount: 0,
+      }
+      return
+    }
+
+    // 转换为 AST Parser 需要的格式
+    const configs = newComponents.map(comp => ({
+      tag: comp.tag,
+      props: comp.props,
+      children: comp.children ? [comp.children] : [],
+    }))
+
+    const parser = createParser()
+    const ast = parser.parse(configs)
+
+    // 更新 AST 文本
+    astText.value = JSON.stringify(ast, null, 2)
+
+    // 更新统计信息
+    astStats.value = {
+      totalNodes: countNodes(ast),
+      depth: getDepth(ast),
+      elementCount: findAllNodes(ast, isElementNode).length,
+    }
+  },
+  { deep: true }
+)
+
 // 拖拽开始
-function handleDragStart(event: globalThis.DragEvent, comp: ComponentDef) {
+function handleDragStart(event: globalThis.DragEvent, comp: ComponentConfig) {
   if (event.dataTransfer) {
     event.dataTransfer.effectAllowed = 'copy'
-    event.dataTransfer.setData('component', JSON.stringify(comp))
+    // 传输 AST 节点数据和 category 信息
+    event.dataTransfer.setData(
+      'component',
+      JSON.stringify({
+        astNode: comp.astNode,
+        category: comp.category,
+      })
+    )
   }
 }
 
@@ -100,19 +130,34 @@ function handleDrop(event: globalThis.DragEvent) {
   if (event.dataTransfer) {
     const compData = event.dataTransfer.getData('component')
     if (compData) {
-      const comp = JSON.parse(compData) as ComponentDef
-      addComponent(comp)
+      const { astNode, category } = JSON.parse(compData)
+      addComponent(astNode, category)
     }
   }
 }
 
-// 添加组件到画布
-function addComponent(comp: ComponentDef) {
+// 添加组件到画布 - 使用 AST 结构
+function addComponent(astNode: ElementNode, category?: 'basic' | 'high' | 'business') {
+  // 从 AST 节点提取数据
+  const tag = astNode.tag
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const props: Record<string, any> = {}
+
+  // 从 attributes 转换为 props
+  astNode.attributes?.forEach(attr => {
+    props[attr.name] = attr.value
+  })
+
+  // 提取文本内容
+  const textChild = astNode.children?.find(child => child.type === NodeType.TEXT)
+  const children = textChild && 'content' in textChild ? textChild.content : ''
+
   canvasComponents.value.push({
-    tag: comp.tag,
-    component: comp.tag,
-    props: { ...comp.defaultProps },
-    children: comp.defaultChildren || '',
+    tag,
+    component: tag,
+    props,
+    children,
+    category,
   })
   // 自动选中新添加的组件
   selectedIndex.value = canvasComponents.value.length - 1
@@ -172,42 +217,7 @@ function clearCanvas() {
   canvasComponents.value = []
   selectedIndex.value = null
   generatedCode.value = ''
-  astText.value = ''
-  astStats.value = {
-    totalNodes: 0,
-    depth: 0,
-    elementCount: 0,
-  }
-}
-
-// 解析为 AST
-function parseToAST() {
-  if (canvasComponents.value.length === 0) {
-    ElMessage.warning('画布为空，请先添加组件')
-    return
-  }
-
-  // 转换为 ComponentConfig 格式
-  const configs: ComponentConfig[] = canvasComponents.value.map(comp => ({
-    tag: comp.tag,
-    props: comp.props,
-    children: comp.children ? [comp.children] : [],
-  }))
-
-  const parser = createParser()
-  const ast = parser.parse(configs)
-
-  // 更新 AST 文本
-  astText.value = JSON.stringify(ast, null, 2)
-
-  // 更新统计信息
-  astStats.value = {
-    totalNodes: countNodes(ast),
-    depth: getDepth(ast),
-    elementCount: findAllNodes(ast, isElementNode).length,
-  }
-
-  ElMessage.success('AST 解析成功')
+  // AST 会通过 watch 自动清空
 }
 
 // 生成代码
@@ -217,8 +227,8 @@ function generateCode() {
     return
   }
 
-  // 转换为 ComponentConfig 格式
-  const configs: ComponentConfig[] = canvasComponents.value.map(comp => ({
+  // 转换为 AST Parser 需要的 ComponentConfig 格式
+  const configs = canvasComponents.value.map(comp => ({
     tag: comp.tag,
     props: comp.props,
     children: comp.children ? [comp.children] : [],

@@ -5,6 +5,7 @@ import vue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 import prettier from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
+import globals from 'globals'
 
 export default [
   // JavaScript 推荐配置
@@ -30,15 +31,9 @@ export default [
       },
       globals: {
         // 浏览器环境全局变量
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
+        ...globals.browser,
         // Node.js 环境全局变量
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
+        ...globals.node,
       },
     },
     plugins: {
@@ -87,9 +82,7 @@ export default [
       },
       globals: {
         // 浏览器环境全局变量
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
+        ...globals.browser,
         // Vue 3 编译器宏(在 <script setup> 中自动可用)
         defineProps: 'readonly',
         defineEmits: 'readonly',

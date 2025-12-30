@@ -13,5 +13,8 @@
     "preview": "vite preview --port 6003",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\""
+  },
+  "dependencies": {
+    "vue-json-pretty": "^2.6.0"
   }
 }

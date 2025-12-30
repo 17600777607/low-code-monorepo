@@ -5,8 +5,6 @@
       <h2 class="m-0 text-lg text-gray-800">设计画布</h2>
       <div>
         <el-button-group>
-          <el-button size="small" :icon="View">预览</el-button>
-          <el-button size="small" :icon="Document">导出</el-button>
           <el-button size="small" :icon="Delete" @click="handleClearCanvas"> 清空 </el-button>
         </el-button-group>
       </div>
@@ -71,6 +69,8 @@ export interface CanvasComponent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: Record<string, any>
   children: string
+  /** 组件归属分类 - 用于动态加载配置组件 */
+  category?: 'basic' | 'high' | 'business'
 }
 
 // Props
