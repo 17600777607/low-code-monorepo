@@ -46,9 +46,6 @@ function handleDragStart(event: globalThis.DragEvent, comp: ComponentDef) {
 </script>
 
 <style scoped>
-:deep(.el-tabs__header) {
-  padding-top: 22px;
-}
 :deep(.el-tabs__content) {
   flex: 1;
   overflow-y: auto;

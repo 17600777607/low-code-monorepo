@@ -1,14 +1,14 @@
 <template>
   <main class="mx-px flex flex-1 flex-col bg-white">
     <!-- 画布头部 -->
-    <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+    <!-- <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
       <h2 class="m-0 text-lg text-gray-800">设计画布</h2>
       <div>
         <el-button-group>
           <el-button size="small" :icon="Delete" @click="handleClearCanvas"> 清空 </el-button>
         </el-button-group>
       </div>
-    </div>
+    </div> -->
 
     <!-- 画布容器 -->
     <div
@@ -87,7 +87,7 @@ const componentCache = new Map<string, Component | string>()
  * 将 kebab-case 转换为 PascalCase
  * el-button -> ElButton
  */
-function kebabToPascal(str: string): string {
+const kebabToPascal = (str: string): string => {
   return str
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -97,7 +97,7 @@ function kebabToPascal(str: string): string {
 /**
  * 动态解析组件
  */
-function resolveComponentTag(tag: string): Component | string {
+const resolveComponentTag = (tag: string): Component | string => {
   // 检查缓存
   if (componentCache.has(tag)) {
     return componentCache.get(tag)!
@@ -139,23 +139,18 @@ function resolveComponentTag(tag: string): Component | string {
 }
 
 // 拖拽放置
-function handleDrop(event: globalThis.DragEvent) {
+const handleDrop = (event: globalThis.DragEvent) => {
   emit('drop', event)
 }
 
 // 选择组件
-function handleSelectComponent(index: number) {
+const handleSelectComponent = (index: number) => {
   emit('selectComponent', index)
 }
 
 // 移除组件
-function handleRemoveComponent(index: number) {
+const handleRemoveComponent = (index: number) => {
   emit('removeComponent', index)
-}
-
-// 清空画布
-function handleClearCanvas() {
-  emit('clearCanvas')
 }
 </script>
 

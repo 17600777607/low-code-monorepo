@@ -80,10 +80,10 @@ function handleUpdateChildren(value: string) {
   height: 100%;
 }
 
-:deep(.el-tabs__header) {
+/* :deep(.el-tabs__header) {
   margin: 0;
   padding-top: 22px;
-}
+} */
 
 :deep(.el-tabs__content) {
   flex: 1;

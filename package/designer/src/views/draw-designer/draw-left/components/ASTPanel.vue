@@ -92,7 +92,7 @@ function calculateHeight() {
     // 获取容器高度,减去 padding 和 border
     const containerHeight = astContainerRef.value.clientHeight
     // 减去内边距 (p-3 = 12px * 2 = 24px) 和边框 (1px * 2 = 2px)
-    astViewerHeight.value = Math.max(containerHeight - 26, 300)
+    astViewerHeight.value = Math.max(containerHeight - 26, 30)
   }
 }
 

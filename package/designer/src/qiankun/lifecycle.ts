@@ -7,6 +7,7 @@ import type { App as VueApp } from 'vue'
 import { createApp } from 'vue'
 import consola from 'consola'
 import App from '@designer/App.vue'
+import router from '@designer/router'
 
 let app: VueApp | null = null
 
@@ -16,7 +17,7 @@ let app: VueApp | null = null
 function render(props: QiankunProps = {}) {
   const { container } = props
   app = createApp(App)
-
+  app.use(router)
   const containerEl = container
     ? container.querySelector('#designer-app')
     : document.getElementById('designer-app')
@@ -28,7 +29,7 @@ function render(props: QiankunProps = {}) {
  * 下次微应用重新进入时会直接调用 mount 钩子，不会再重复触发 bootstrap
  */
 function bootstrap() {
-  /* eslint-disable no-console, no-undef */
+  /* eslint-disable no-console */
   console.groupCollapsed('📦 [designer] 子应用内部生命周期')
   consola.ready('[designer] bootstrap')
 }
@@ -46,7 +47,7 @@ function mount(props: QiankunProps) {
  * 应用每次 切出/卸载 会调用的方法，通常在这里我们会卸载微应用的应用实例
  */
 function unmount(props: QiankunProps) {
-  /* eslint-disable no-console, no-undef */
+  /* eslint-disable no-console */
   console.groupCollapsed(`📦 [designer] 子应用内部生命周期`)
   consola.info('[designer] unmount', props)
   if (app) {
