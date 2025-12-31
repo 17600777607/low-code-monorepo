@@ -17,6 +17,11 @@ export const cardConfig: ComponentConfig = {
         name: 'shadow',
         value: 'hover',
       },
+      {
+        type: NodeType.ATTRIBUTE,
+        name: 'header',
+        value: 'Card Title',
+      },
     ],
     children: [
       {
@@ -31,7 +36,7 @@ export const cardConfig: ComponentConfig = {
         height: undefined,
       },
       layout: 'block',
-      isContainer: false,
+      isContainer: true,
     },
   },
   // 元数据 - 仅用于 UI 展示

@@ -6,10 +6,12 @@
       <DrawLeft :ast-stats="astStats" :ast-text="astText" @drag-start="handleDragStart" />
 
       <!-- 中间：设计面板 -->
+      <!-- 中间：设计面板 -->
       <DrawCenter
         :canvas-components="canvasComponents"
         :selected-index="selectedIndex"
         @drop="handleDrop"
+        @drop-into="handleDropInto"
         @select-component="selectComponent"
         @update-component="updateComponent"
         @remove-component="removeComponent"
@@ -144,6 +146,50 @@ const handleDrop = (event: globalThis.DragEvent) => {
 
       addComponent(astNode, category, position)
     }
+  }
+}
+
+// 递归查找节点
+const findNodeById = (nodes: ElementNode[], id: string): ElementNode | null => {
+  for (const node of nodes) {
+    if (node.id === id) {
+      return node
+    }
+    const children =
+      node.children?.filter((c): c is ElementNode => c.type === NodeType.ELEMENT) || []
+    if (children.length > 0) {
+      const found = findNodeById(children, id)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+// 处理放入容器
+const handleDropInto = (payload: { targetId: string; sourceNode: ElementNode }) => {
+  const { targetId, sourceNode } = payload
+  const targetNode = findNodeById(canvasComponents.value, targetId)
+
+  if (targetNode) {
+    // 创建新节点
+    const newNode: ElementNode = {
+      ...sourceNode,
+      id: generateId(sourceNode.tag),
+      meta: {
+        ...sourceNode.meta,
+        position: { x: 20, y: 20 }, // 默认相对位置
+        layout: 'block',
+      },
+    }
+
+    if (!targetNode.children) {
+      targetNode.children = []
+    }
+
+    targetNode.children.push(newNode)
+
+    // 可能需要重新计算 AST
+    canvasComponents.value = [...canvasComponents.value]
   }
 }
 

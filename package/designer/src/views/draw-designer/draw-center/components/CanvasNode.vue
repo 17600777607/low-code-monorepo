@@ -9,6 +9,9 @@
     }"
     :style="nodeStyle"
     @click.stop="handleSelect"
+    @drop.stop="handleNativeDrop"
+    @dragover.prevent.stop="handleNativeDragOver"
+    @dragleave.stop="handleNativeDragLeave"
   >
     <!-- 实际渲染的组件 -->
     <component
@@ -24,6 +27,7 @@
           :key="child.id || `child-${Math.random()}`"
           :ast-node="child"
           :selected-id="selectedId"
+          :is-parent-flex="isCurrentFlex"
           @select="$emit('select', $event)"
           @update="$emit('update', $event)"
           @drop-into="handleDropIntoChild"
@@ -54,6 +58,7 @@ import {
   onBeforeUnmount,
   defineAsyncComponent,
   type Component,
+  watch,
 } from 'vue'
 import interact from 'interactjs'
 import type { ElementNode, TextNode, AttributeNode } from '@designer/ast/types'
@@ -65,9 +70,12 @@ const componentCache = new Map<string, Component | string>()
 interface Props {
   astNode: ElementNode
   selectedId?: string
+  isParentFlex?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isParentFlex: false,
+})
 
 const emit = defineEmits<{
   select: [id: string]
@@ -93,19 +101,34 @@ const textContent = computed(() => {
   return textNode?.content || ''
 })
 
-// 计算节点样式（绝对定位）
+// 计算节点样式
 const nodeStyle = computed(() => {
   const meta = props.astNode.meta
-  if (!meta?.position) return {}
+  const sizeStyle = {
+    width:
+      typeof meta?.size?.width === 'number' ? `${meta.size.width}px` : meta?.size?.width || 'auto',
+    height:
+      typeof meta?.size?.height === 'number'
+        ? `${meta.size.height}px`
+        : meta?.size?.height || 'auto',
+  }
+
+  // 如果父容器是 Flex 布局，则不由子元素控制绝对定位
+  if (props.isParentFlex) {
+    return {
+      position: 'relative' as const, // 或者 static，视需求而定
+      ...sizeStyle,
+    }
+  }
+
+  // 绝对定位模式（默认）
+  if (!meta?.position) return sizeStyle
 
   return {
     position: 'absolute' as const,
     left: `${meta.position.x}px`,
     top: `${meta.position.y}px`,
-    width:
-      typeof meta.size?.width === 'number' ? `${meta.size.width}px` : meta.size?.width || 'auto',
-    height:
-      typeof meta.size?.height === 'number' ? `${meta.size.height}px` : meta.size?.height || 'auto',
+    ...sizeStyle,
   }
 })
 
@@ -118,6 +141,10 @@ const getLayoutStyle = (node: ElementNode) => {
 
   if (meta.layout === 'flex') {
     styles.display = 'flex'
+    // 确保 flex 容器有相对定位上下文，以便子元素在即使是 absolute 时也能相对于它定位（如果在混合模式下）
+    // 但在纯 flex 模式下，这个 flex 容器也是其父级的 item
+    // styles.position = 'relative'
+
     if (meta.flexProps) {
       if (meta.flexProps.direction) styles.flexDirection = meta.flexProps.direction
       if (meta.flexProps.justify) styles.justifyContent = meta.flexProps.justify
@@ -134,6 +161,9 @@ const getLayoutStyle = (node: ElementNode) => {
   return styles
 }
 
+// 当前节点是否为 Flex 容器
+const isCurrentFlex = computed(() => props.astNode.meta?.layout === 'flex')
+
 // 将 AttributeNode[] 转换为 props 对象
 const getPropsFromAttributes = (attributes: AttributeNode[]) => {
   const props: Record<string, string | boolean> = {}
@@ -143,12 +173,7 @@ const getPropsFromAttributes = (attributes: AttributeNode[]) => {
   return props
 }
 
-// 组件缓存已移至模块级别
-
-/**
- * 将 kebab-case 转换为 PascalCase
- * el-button -> ElButton
- */
+// Component resolving logic...
 const kebabToPascal = (str: string): string => {
   return str
     .split('-')
@@ -156,70 +181,118 @@ const kebabToPascal = (str: string): string => {
     .join('')
 }
 
-/**
- * 动态解析组件
- */
 const resolveComponent = (tag: string): Component | string => {
-  // 检查缓存
   if (componentCache.has(tag)) {
     return componentCache.get(tag)!
   }
 
-  // 原生 HTML 标签
   const nativeTags = ['div', 'span', 'p', 'section', 'article', 'header', 'footer']
   if (nativeTags.includes(tag)) {
     componentCache.set(tag, tag)
     return tag
   }
 
-  // Element Plus 组件
   if (tag.startsWith('el-')) {
     const componentName = kebabToPascal(tag)
-
-    // 使用异步组件动态导入
     const asyncComponent = defineAsyncComponent(() =>
       import('element-plus')
         .then(module => {
           const comp = module[componentName as keyof typeof module]
-          if (!comp) {
-            return { template: '<div>组件不存在</div>' }
-          }
+          if (!comp) return { template: '<div>组件不存在</div>' }
           return comp as Component
         })
         .catch(_error => {
           return { template: '<div>加载失败</div>' }
         })
     )
-
     componentCache.set(tag, asyncComponent)
     return asyncComponent
   }
 
-  // 默认返回 div
   componentCache.set(tag, 'div')
   return 'div'
 }
 
-// 选中节点
 const handleSelect = () => {
   emit('select', nodeId.value)
 }
 
-// 处理拖入子容器
 const handleDropIntoChild = (payload: { targetId: string; sourceNode: ElementNode }) => {
   emit('dropInto', payload)
 }
 
-// 初始化拖拽
+// 原生拖拽处理 (处理侧边栏拖入)
+const handleNativeDragOver = (_event: DragEvent) => {
+  if (props.astNode.meta?.isContainer) {
+    // 允许放置
+    isDragOver.value = true
+  }
+}
+
+const handleNativeDragLeave = (_event: DragEvent) => {
+  isDragOver.value = false
+}
+
+const handleNativeDrop = (event: DragEvent) => {
+  if (!props.astNode.meta?.isContainer) return
+
+  isDragOver.value = false
+  const compData = event.dataTransfer?.getData('component')
+
+  if (compData) {
+    // 这是一个来自侧边栏的新组件
+    try {
+      const { astNode } = JSON.parse(compData)
+      emit('dropInto', { targetId: nodeId.value, sourceNode: astNode })
+    } catch (e) {
+      consola.error('Failed to parse dropped component data', e)
+    }
+  }
+}
+
 let interactInstance: ReturnType<typeof interact> | null = null
 
-onMounted(() => {
+// 初始化或更新 Interact
+const initInteract = () => {
+  if (interactInstance) {
+    interactInstance.unset()
+    interactInstance = null
+  }
+
+  // 如果在 Flex 父容器中，禁用绝对定位拖拽（暂时不支持 Flex 排序拖拽）
+  if (props.isParentFlex) {
+    const element = document.getElementById(`canvas-node-${nodeId.value}`)
+    if (!element) return
+
+    // 仍然启用 dropzone 以便可以作为容器接收
+    interactInstance = interact(element).dropzone({
+      accept: '.canvas-node',
+      ondragenter() {
+        if (props.astNode.meta?.isContainer) isDragOver.value = true
+      },
+      ondragleave() {
+        isDragOver.value = false
+      },
+      ondrop(event) {
+        isDragOver.value = false
+        if (props.astNode.meta?.isContainer) {
+          const sourceElement = event.relatedTarget as HTMLElement
+          const sourceId = sourceElement?.id?.replace('canvas-node-', '')
+          if (sourceId && sourceId !== nodeId.value) {
+            consola.log('Drop into container:', nodeId.value, 'from:', sourceId)
+          }
+        }
+      },
+    })
+    return
+  }
+
+  // 绝对定位模式下的拖拽逻辑
   const element = document.getElementById(`canvas-node-${nodeId.value}`)
   if (!element) return
 
   interactInstance = interact(element)
     .draggable({
-      // 网格吸附
       modifiers: [
         interact.modifiers.snap({
           targets: [interact.snappers.grid({ x: 20, y: 20 })],
@@ -232,15 +305,12 @@ onMounted(() => {
           const { target, dx, dy } = event
           const currentX = parseFloat(target.style.left) || 0
           const currentY = parseFloat(target.style.top) || 0
-
           const newX = currentX + dx
           const newY = currentY + dy
-
           target.style.left = `${newX}px`
           target.style.top = `${newY}px`
         },
         end(event) {
-          // 更新 AST 节点位置
           const updatedNode: ElementNode = {
             ...props.astNode,
             meta: {
@@ -268,18 +338,22 @@ onMounted(() => {
       ondrop(event) {
         isDragOver.value = false
         if (props.astNode.meta?.isContainer) {
-          // 触发嵌套事件
           const sourceElement = event.relatedTarget as HTMLElement
           const sourceId = sourceElement?.id?.replace('canvas-node-', '')
           if (sourceId && sourceId !== nodeId.value) {
-            // 这里需要从外部传入完整的 sourceNode
-            // 暂时先触发事件，具体逻辑在父组件处理
             consola.log('Drop into container:', nodeId.value, 'from:', sourceId)
           }
         }
       },
     })
+}
+
+onMounted(() => {
+  initInteract()
 })
+
+// 监听属性变化重新初始化
+watch(() => props.isParentFlex, initInteract)
 
 onBeforeUnmount(() => {
   if (interactInstance) {
@@ -342,5 +416,17 @@ onBeforeUnmount(() => {
 .node-component {
   width: 100%;
   height: 100%;
+}
+
+:deep(.el-card) {
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.el-card__body) {
+  position: relative;
+  flex: 1;
+  box-sizing: border-box;
+  /* 确保子元素绝对定位是相对于 body */
 }
 </style>

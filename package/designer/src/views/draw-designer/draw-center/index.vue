@@ -1,10 +1,23 @@
 <template>
-  <main class="mx-px flex flex-1 flex-col bg-white">
+  <main class="relative mx-px flex flex-1 flex-col bg-white">
+    <!-- 顶部工具栏（布局切换） -->
+    <div
+      class="absolute top-2 right-4 z-10 flex gap-2 rounded border border-gray-200 bg-white/80 p-1 shadow-sm"
+    >
+      <el-radio-group v-model="pageLayout" size="small">
+        <el-radio-button value="free">自由布局</el-radio-button>
+        <el-radio-button value="flex">Flex自适应</el-radio-button>
+      </el-radio-group>
+    </div>
+
     <!-- 画布容器 -->
     <div
       ref="canvasContainerRef"
       class="canvas-container"
-      :class="{ 'grid-enabled': showGrid }"
+      :class="{
+        'grid-enabled': showGrid && pageLayout === 'free',
+        'is-flex-layout': pageLayout === 'flex',
+      }"
       @drop="handleDrop"
       @dragover.prevent
       @dragenter.prevent
@@ -20,6 +33,7 @@
         :key="comp.id || `comp-${Math.random()}`"
         :ast-node="comp"
         :selected-id="selectedComponentId || undefined"
+        :is-parent-flex="pageLayout === 'flex'"
         @select="handleSelectNode"
         @update="handleUpdateNode"
         @drop-into="handleDropInto"
@@ -47,6 +61,7 @@ const props = defineProps<Props>()
 // 状态
 const showGrid = ref(true) // 是否显示网格
 const selectedComponentId = ref<string | null>(null)
+const pageLayout = ref<'free' | 'flex'>('free') // 页面布局模式
 
 // Emits
 const emit = defineEmits<{
@@ -54,6 +69,7 @@ const emit = defineEmits<{
   selectComponent: [id: string]
   updateComponent: [node: ElementNode]
   removeComponent: [id: string]
+  'drop-into': [payload: { targetId: string; sourceNode: ElementNode }]
 }>()
 
 // 拖拽放置到画布
@@ -77,8 +93,8 @@ const handleUpdateNode = (node: ElementNode) => {
 }
 
 // 处理拖入容器
-const handleDropInto = (_payload: { targetId: string; sourceNode: ElementNode }) => {
-  // TODO: 实现将 sourceNode 添加到 targetId 容器的 children
+const handleDropInto = (payload: { targetId: string; sourceNode: ElementNode }) => {
+  emit('drop-into', payload)
 }
 </script>
 
@@ -91,6 +107,15 @@ const handleDropInto = (_payload: { targetId: string; sourceNode: ElementNode })
   min-height: 600px;
   background-color: #f9fafb;
   overflow: auto;
+}
+
+/* Flex 布局模式 */
+.canvas-container.is-flex-layout {
+  display: flex;
+  flex-wrap: wrap; /* 默认 wrap */
+  align-content: flex-start;
+  gap: 8px; /* 默认间距 */
+  padding: 20px;
 }
 
 /* 网格背景 */
