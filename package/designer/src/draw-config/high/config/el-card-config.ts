@@ -24,6 +24,15 @@ export const cardConfig: ComponentConfig = {
         content: '卡片内容',
       },
     ],
+    // 默认 meta 配置
+    meta: {
+      size: {
+        width: undefined,
+        height: undefined,
+      },
+      layout: 'block',
+      isContainer: false,
+    },
   },
   // 元数据 - 仅用于 UI 展示
   label: '卡片',

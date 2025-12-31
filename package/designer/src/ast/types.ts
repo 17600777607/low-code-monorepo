@@ -6,7 +6,6 @@
  * 节点类型枚举
  */
 
-// @ts-expect-error
 export enum NodeType {
   /** 根节点 */
   ROOT = 'Root',
@@ -40,6 +39,8 @@ export interface RootNode extends BaseNode {
  */
 export interface ElementNode extends BaseNode {
   type: NodeType.ELEMENT
+  /** 节点唯一标识 - 用于画布拖拽和选中 */
+  id?: string
   /** 标签名 */
   tag: string
   /** 属性列表 */
@@ -48,6 +49,27 @@ export interface ElementNode extends BaseNode {
   children: ASTNode[]
   /** 是否自闭合标签 */
   isSelfClosing?: boolean
+  /** 画布元数据 - 用于可视化编辑 */
+  meta?: {
+    /** 画布位置 */
+    position?: { x: number; y: number }
+    /** 尺寸 */
+    size?: { width?: number; height?: number }
+    /** 布局模式 */
+    layout?: 'flex' | 'block' | 'grid'
+    /** 是否可作为容器(可接收子组件) */
+    isContainer?: boolean
+    /** 组件分类 */
+    category?: 'basic' | 'high' | 'business'
+    /** flex 容器属性 */
+    flexProps?: {
+      direction?: 'row' | 'column'
+      justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around'
+      align?: 'flex-start' | 'center' | 'flex-end' | 'stretch'
+      wrap?: 'nowrap' | 'wrap'
+      gap?: number
+    }
+  }
 }
 
 /**

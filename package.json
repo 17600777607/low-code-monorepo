@@ -81,6 +81,7 @@
     "@cwj/ui": "workspace:*",
     "consola": "^3.4.2",
     "element-plus": "^2.13.0",
+    "interactjs": "^1.10.27",
     "pinia": "^2.3.0",
     "qiankun": "^2.10.16",
     "vue": "^3.5.26",

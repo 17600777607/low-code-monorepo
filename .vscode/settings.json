@@ -75,5 +75,5 @@
   },
 
   // 拼写检查
-  "cSpell.words": ["qiankun", "lifecycles", "VITE", "consola", "unplugin"]
+  "cSpell.words": ["qiankun", "lifecycles", "VITE", "consola", "unplugin", "interactjs", "vueuse"]
 }

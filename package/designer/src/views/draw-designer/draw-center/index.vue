@@ -1,160 +1,115 @@
 <template>
   <main class="mx-px flex flex-1 flex-col bg-white">
-    <!-- 画布头部 -->
-    <!-- <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-      <h2 class="m-0 text-lg text-gray-800">设计画布</h2>
-      <div>
-        <el-button-group>
-          <el-button size="small" :icon="Delete" @click="handleClearCanvas"> 清空 </el-button>
-        </el-button-group>
-      </div>
-    </div> -->
-
     <!-- 画布容器 -->
     <div
-      class="h-full flex-1 overflow-y-auto bg-gray-50 p-6"
+      ref="canvasContainerRef"
+      class="canvas-container"
+      :class="{ 'grid-enabled': showGrid }"
       @drop="handleDrop"
       @dragover.prevent
       @dragenter.prevent
     >
       <!-- 空状态 -->
-      <div v-if="canvasComponents.length === 0" class="flex h-full items-center justify-center">
+      <div v-if="canvasComponents.length === 0" class="empty-state">
         <el-empty description="从左侧拖拽组件到这里开始设计" />
       </div>
 
-      <!-- 组件列表 -->
-      <div v-else class="flex flex-col gap-3">
-        <div
-          v-for="(comp, index) in canvasComponents"
-          :key="index"
-          class="group relative cursor-pointer rounded border-2 border-transparent bg-white p-4 transition-all hover:border-blue-500 hover:shadow-md"
-          :class="{ 'border-blue-500 shadow-lg': selectedIndex === index }"
-          @click="handleSelectComponent(index)"
-        >
-          <component
-            :is="resolveComponentTag(comp.tag)"
-            v-bind="comp.props"
-            class="pointer-events-none"
-          >
-            {{ comp.children }}
-          </component>
-          <div
-            class="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
-            :class="{ 'opacity-100': selectedIndex === index }"
-          >
-            <el-button
-              type="danger"
-              size="small"
-              circle
-              :icon="Delete"
-              @click.stop="handleRemoveComponent(index)"
-            />
-          </div>
-        </div>
-      </div>
+      <!-- 使用递归组件渲染画布节点 -->
+      <CanvasNode
+        v-for="comp in canvasComponents"
+        :key="comp.id || `comp-${Math.random()}`"
+        :ast-node="comp"
+        :selected-id="selectedComponentId || undefined"
+        @select="handleSelectNode"
+        @update="handleUpdateNode"
+        @drop-into="handleDropInto"
+      />
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, type Component } from 'vue'
-import { Delete } from '@element-plus/icons-vue'
-import type { CanvasComponent } from '@designer/types/draw-center'
+import { ref } from 'vue'
+import CanvasNode from './components/CanvasNode.vue'
+import type { ElementNode } from '@designer/ast/types'
 
 // Re-export 以保持向后兼容
 export type { CanvasComponent } from '@designer/types/draw-center'
 
 // Props
 interface Props {
-  canvasComponents: CanvasComponent[]
+  canvasComponents: ElementNode[] // 改用 ElementNode 类型
   selectedIndex: number | null
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+// 状态
+const showGrid = ref(true) // 是否显示网格
+const selectedComponentId = ref<string | null>(null)
 
 // Emits
 const emit = defineEmits<{
   drop: [event: globalThis.DragEvent]
-  selectComponent: [index: number]
-  removeComponent: [index: number]
-  clearCanvas: []
+  selectComponent: [id: string]
+  updateComponent: [node: ElementNode]
+  removeComponent: [id: string]
 }>()
 
-// 组件缓存
-const componentCache = new Map<string, Component | string>()
-
-/**
- * 将 kebab-case 转换为 PascalCase
- * el-button -> ElButton
- */
-const kebabToPascal = (str: string): string => {
-  return str
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('')
-}
-
-/**
- * 动态解析组件
- */
-const resolveComponentTag = (tag: string): Component | string => {
-  // 检查缓存
-  if (componentCache.has(tag)) {
-    return componentCache.get(tag)!
-  }
-
-  // 原生 HTML 标签
-  const nativeTags = ['div', 'span', 'p', 'section', 'article', 'header', 'footer']
-  if (nativeTags.includes(tag)) {
-    componentCache.set(tag, tag)
-    return tag
-  }
-
-  // Element Plus 组件
-  if (tag.startsWith('el-')) {
-    const componentName = kebabToPascal(tag)
-
-    // 使用异步组件动态导入
-    const asyncComponent = defineAsyncComponent(() =>
-      import('element-plus')
-        .then(module => {
-          const comp = module[componentName as keyof typeof module]
-          if (!comp) {
-            return { template: '<div>组件不存在</div>' }
-          }
-          return comp as Component
-        })
-        .catch(_error => {
-          return { template: '<div>加载失败</div>' }
-        })
-    )
-
-    componentCache.set(tag, asyncComponent)
-    return asyncComponent
-  }
-
-  // 默认返回 div
-  componentCache.set(tag, 'div')
-  return 'div'
-}
-
-// 拖拽放置
+// 拖拽放置到画布
 const handleDrop = (event: globalThis.DragEvent) => {
   emit('drop', event)
 }
 
-// 选择组件
-const handleSelectComponent = (index: number) => {
-  emit('selectComponent', index)
+// 选择节点
+const handleSelectNode = (id: string) => {
+  selectedComponentId.value = id
+  // 通过 id 找到索引并触发原有事件（保持兼容性）
+  const index = props.canvasComponents.findIndex(comp => comp.id === id)
+  if (index !== -1) {
+    emit('selectComponent', id)
+  }
 }
 
-// 移除组件
-const handleRemoveComponent = (index: number) => {
-  emit('removeComponent', index)
+// 更新节点
+const handleUpdateNode = (node: ElementNode) => {
+  emit('updateComponent', node)
+}
+
+// 处理拖入容器
+const handleDropInto = (_payload: { targetId: string; sourceNode: ElementNode }) => {
+  // TODO: 实现将 sourceNode 添加到 targetId 容器的 children
 }
 </script>
 
 <style scoped>
+/* 画布容器 */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  background-color: #f9fafb;
+  overflow: auto;
+}
+
+/* 网格背景 */
+.canvas-container.grid-enabled {
+  background-image:
+    linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+    linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: -1px -1px;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+}
 .group:hover .group-hover\:opacity-100 {
   opacity: 1;
 }

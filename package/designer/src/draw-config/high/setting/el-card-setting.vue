@@ -1,40 +1,38 @@
 <template>
-  <div>
-    <el-divider content-position="left">卡片属性</el-divider>
+  <el-divider content-position="left">卡片属性</el-divider>
 
-    <el-form-item label="标题">
-      <el-input
-        :model-value="selectedComponent.props.header"
-        placeholder="卡片标题"
-        @update:model-value="updateProp('header', $event)"
-      />
-    </el-form-item>
+  <el-form-item label="标题">
+    <el-input
+      :model-value="selectedComponent.props.header"
+      placeholder="卡片标题"
+      @update:model-value="updateProp('header', $event)"
+    />
+  </el-form-item>
 
-    <el-form-item label="阴影">
-      <el-select
-        :model-value="selectedComponent.props.shadow"
-        @update:model-value="updateProp('shadow', $event)"
-      >
-        <el-option label="总是显示" value="always" />
-        <el-option label="悬停显示" value="hover" />
-        <el-option label="从不显示" value="never" />
-      </el-select>
-    </el-form-item>
+  <el-form-item label="阴影">
+    <el-select
+      :model-value="selectedComponent.props.shadow"
+      @update:model-value="updateProp('shadow', $event)"
+    >
+      <el-option label="总是显示" value="always" />
+      <el-option label="悬停显示" value="hover" />
+      <el-option label="从不显示" value="never" />
+    </el-select>
+  </el-form-item>
 
-    <el-form-item label="内容">
-      <el-input
-        :model-value="selectedComponent.children"
-        type="textarea"
-        :rows="3"
-        placeholder="卡片内容"
-        @update:model-value="updateChildren($event)"
-      />
-    </el-form-item>
-  </div>
+  <el-form-item label="内容">
+    <el-input
+      :model-value="selectedComponent.children"
+      type="textarea"
+      :rows="3"
+      placeholder="卡片内容"
+      @update:model-value="updateChildren($event)"
+    />
+  </el-form-item>
 </template>
 
 <script setup lang="ts">
-import type { CanvasComponent } from '../../../view/draw-center/index.vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
 
 /**
  * 卡片组件配置面板

@@ -1,12 +1,13 @@
 <template>
   <aside class="flex w-80 flex-col overflow-hidden border-l border-gray-200 bg-white">
     <!-- 配置内容 -->
-    <div v-if="selectedComponent" class="flex flex-1 flex-col overflow-hidden">
+    <div v-if="adaptedComponent" class="flex flex-1 flex-col overflow-hidden">
       <el-tabs v-model="activeTab" class="flex flex-1 flex-col" stretch>
         <!-- 基础配置 Tab -->
         <el-tab-pane label="基础配置" name="basic">
           <BasicConfig
-            :selected-component="selectedComponent"
+            :selected-component="adaptedComponent"
+            :raw-node="selectedComponent"
             @update-prop="handleUpdateProp"
             @update-children="handleUpdateChildren"
           />
@@ -15,7 +16,8 @@
         <!-- 组件配置 Tab -->
         <el-tab-pane label="组件配置" name="component">
           <ComponentConfig
-            :selected-component="selectedComponent"
+            :selected-component="adaptedComponent"
+            :raw-node="selectedComponent"
             @update-prop="handleUpdateProp"
             @update-children="handleUpdateChildren"
           />
@@ -23,7 +25,11 @@
 
         <!-- 高级配置 Tab -->
         <el-tab-pane label="高级配置" name="advanced">
-          <AdvancedConfig :selected-component="selectedComponent" @update-prop="handleUpdateProp" />
+          <AdvancedConfig
+            :selected-component="adaptedComponent"
+            :raw-node="selectedComponent"
+            @update-prop="handleUpdateProp"
+          />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -36,19 +42,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import BasicConfig from './components/BasicConfig.vue'
 import ComponentConfig from './components/ComponentConfig.vue'
 import AdvancedConfig from './components/AdvancedConfig.vue'
+import type { ElementNode } from '@designer/ast/types'
 import type { CanvasComponent } from '@designer/types/draw-center'
+import { NodeType } from '@designer/ast/types'
 
 // Props
 interface Props {
-  selectedComponent: CanvasComponent | null
+  selectedComponent: ElementNode | undefined
   generatedCode: string
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+// 将 ElementNode 转换为 CanvasComponent 的适配层
+const adaptedComponent = computed<CanvasComponent | null>(() => {
+  if (!props.selectedComponent) return null
+
+  const node = props.selectedComponent
+
+  // 将 attributes 转换为 props
+  const propsObj: Record<string, any> = {}
+  node.attributes?.forEach(attr => {
+    propsObj[attr.name] = attr.value
+  })
+
+  // 提取文本内容
+  const textChild = node.children?.find(child => child.type === NodeType.TEXT)
+  const children = textChild && 'content' in textChild ? textChild.content : ''
+
+  return {
+    tag: node.tag,
+    component: node.tag,
+    props: propsObj,
+    children,
+    category: node.meta?.category || 'basic', // 从 meta 中读取 category
+  }
+})
 
 // Emits
 const emit = defineEmits<{

@@ -4,7 +4,6 @@
       <el-form-item label="组件类型">
         <el-input :value="selectedComponent.tag" disabled />
       </el-form-item>
-
       <!-- 动态加载组件特定配置 -->
       <component
         :is="settingComponent"
@@ -20,7 +19,6 @@
 import { computed, defineAsyncComponent, h, type Component } from 'vue'
 import { ElEmpty, ElText } from 'element-plus'
 import type { CanvasComponent } from '@designer/types/draw-center'
-
 /**
  * 组件配置面板
  * 根据组件的 tag 和 category 动态加载对应的配置组件
@@ -40,7 +38,7 @@ const emit = defineEmits<{
   updateProp: [key: string, value: any]
   updateChildren: [value: string]
 }>()
-
+const rootPath = '../../../../'
 /**
  * 使用 import.meta.glob 预加载所有配置组件
  * 这样可以让 Vite 在构建时识别这些模块
@@ -50,7 +48,7 @@ const emit = defineEmits<{
  * 需要向上3级: ../../../
  */
 const settingModules = import.meta.glob<{ default: Component }>(
-  '../../../draw-config/**/setting/*-setting.vue'
+  '../../../../draw-config/**/setting/*-setting.vue'
 )
 
 /**
@@ -76,9 +74,12 @@ const createEmptyComponent = () =>
     }
   )
 
+// 组件缓存 - 避免重复创建 defineAsyncComponent
+const componentCache = new Map<string, Component>()
+
 /**
  * 动态加载组件配置组件
- * 使用 defineAsyncComponent 的完整配置,包含错误处理
+ * 使用缓存避免重复创建
  */
 const settingComponent = computed<Component>(() => {
   const { tag, category } = props.selectedComponent
@@ -88,8 +89,14 @@ const settingComponent = computed<Component>(() => {
     return () => createEmptyComponent()
   }
 
-  // 构建配置组件路径 (相对于当前文件,向上3级)
-  const settingPath = `../../../draw-config/${category}/setting/${tag}-setting.vue`
+  // 构建配置组件路径和缓存key
+  const settingPath = `${rootPath}draw-config/${category}/setting/${tag}-setting.vue`
+  const cacheKey = `${tag}-${category}`
+
+  // 检查缓存
+  if (componentCache.has(cacheKey)) {
+    return componentCache.get(cacheKey)!
+  }
 
   // 查找对应的模块加载器
   const moduleLoader = settingModules[settingPath]
@@ -99,9 +106,8 @@ const settingComponent = computed<Component>(() => {
     return () => createEmptyComponent()
   }
 
-  // 创建异步组件,使用完整配置
-  return defineAsyncComponent({
-    // 加载函数
+  // 创建异步组件
+  const asyncComponent = defineAsyncComponent({
     loader: () =>
       moduleLoader().then(module => {
         if (!module.default) {
@@ -109,15 +115,16 @@ const settingComponent = computed<Component>(() => {
         }
         return module.default
       }),
-    // 加载中显示的组件
     loadingComponent: () => h('div', { class: 'text-center text-gray-400' }, '加载中...'),
-    // 加载失败显示的组件
     errorComponent: () => createEmptyComponent(),
-    // 延迟显示加载组件的时间 (ms)
     delay: 200,
-    // 超时时间 (ms)
     timeout: 3000,
   })
+
+  // 缓存组件
+  componentCache.set(cacheKey, asyncComponent)
+
+  return asyncComponent
 })
 
 /**

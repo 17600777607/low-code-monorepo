@@ -34,6 +34,15 @@ export const buttonConfig: ComponentConfig = {
         content: '按钮',
       },
     ],
+    // 默认 meta 配置
+    meta: {
+      size: {
+        width: undefined,
+        height: undefined,
+      },
+      layout: 'block',
+      isContainer: false,
+    },
   },
   // 元数据 - 仅用于 UI 展示
   label: '按钮',
