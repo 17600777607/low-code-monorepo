@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CanvasComponent } from '@designer/view/draw-center/index.vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
 
 // Props
 interface Props {

@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, h, type Component } from 'vue'
 import { ElEmpty, ElText } from 'element-plus'
-import type { CanvasComponent } from '@designer/view/draw-center/index.vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
 
 /**
  * 组件配置面板

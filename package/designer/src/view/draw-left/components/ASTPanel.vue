@@ -64,15 +64,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Document } from '@element-plus/icons-vue'
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
-
-/**
- * AST 统计信息接口
- */
-export interface ASTStats {
-  totalNodes: number
-  depth: number
-  elementCount: number
-}
+import type { ASTStats } from '@designer/types/draw-left'
 
 // Props
 interface Props {

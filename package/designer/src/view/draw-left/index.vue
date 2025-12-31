@@ -19,7 +19,7 @@ import { ref } from 'vue'
 import ComponentLibrary from './components/ComponentLibrary.vue'
 import ASTPanel from './components/ASTPanel.vue'
 import type { ComponentDef } from './components/ComponentLibrary.vue'
-import type { ASTStats } from './components/ASTPanel.vue'
+import type { ASTStats } from '@designer/types/draw-left'
 
 // Props
 interface Props {

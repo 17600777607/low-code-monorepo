@@ -58,20 +58,11 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent, type Component } from 'vue'
-import { View, Document, Delete } from '@element-plus/icons-vue'
+import { Delete } from '@element-plus/icons-vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
 
-/**
- * 画布组件接口
- */
-export interface CanvasComponent {
-  tag: string
-  component: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  props: Record<string, any>
-  children: string
-  /** 组件归属分类 - 用于动态加载配置组件 */
-  category?: 'basic' | 'high' | 'business'
-}
+// Re-export 以保持向后兼容
+export type { CanvasComponent } from '@designer/types/draw-center'
 
 // Props
 interface Props {

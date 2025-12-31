@@ -40,7 +40,7 @@ import { ref } from 'vue'
 import BasicConfig from './components/BasicConfig.vue'
 import ComponentConfig from './components/ComponentConfig.vue'
 import AdvancedConfig from './components/AdvancedConfig.vue'
-import type { CanvasComponent } from '../draw-center/index.vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
 
 // Props
 interface Props {

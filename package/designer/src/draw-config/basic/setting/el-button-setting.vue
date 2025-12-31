@@ -7,12 +7,12 @@
         :model-value="selectedComponent.props.type"
         @update:model-value="updateProp('type', $event)"
       >
-        <el-option label="默认" value="" />
-        <el-option label="主要" value="primary" />
-        <el-option label="成功" value="success" />
-        <el-option label="警告" value="warning" />
-        <el-option label="危险" value="danger" />
-        <el-option label="信息" value="info" />
+        <el-option
+          v-for="option in EL_BUTTON_TYPE_OPTIONS"
+          :key="option.value"
+          :label="option.label"
+          :value="option.value"
+        />
       </el-select>
     </el-form-item>
 
@@ -21,9 +21,12 @@
         :model-value="selectedComponent.props.size"
         @update:model-value="updateProp('size', $event)"
       >
-        <el-option label="大" value="large" />
-        <el-option label="默认" value="default" />
-        <el-option label="小" value="small" />
+        <el-option
+          v-for="option in EL_BUTTON_SIZE_OPTIONS"
+          :key="option.value"
+          :label="option.label"
+          :value="option.value"
+        />
       </el-select>
     </el-form-item>
 
@@ -45,7 +48,11 @@
 </template>
 
 <script setup lang="ts">
-import type { CanvasComponent } from '../../../view/draw-center/index.vue'
+import type { CanvasComponent } from '@designer/types/draw-center'
+import {
+  EL_BUTTON_TYPE_OPTIONS,
+  EL_BUTTON_SIZE_OPTIONS,
+} from '@designer/constants/el-button-options'
 
 /**
  * 按钮组件配置面板
