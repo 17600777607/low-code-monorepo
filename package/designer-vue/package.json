@@ -1,17 +1,20 @@
 {
-  "name": "@cwj/account",
+  "name": "@cwj/designer-vue",
   "version": "1.0.0",
-  "description": "账号中心 - 统一登录、注册、找回密码等功能",
+  "description": "设计器 - 低代码平台",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development --port 5001",
-    "dev:test": "vite --mode test --port 5001",
-    "dev:production": "vite --mode production --port 5001",
+    "dev": "vite --mode development --port 5003",
+    "dev:test": "vite --mode test --port 5003",
+    "dev:production": "vite --mode production --port 5003",
     "build:development": "vue-tsc -b && vite build --mode development",
     "build:test": "vue-tsc -b && vite build --mode test",
     "build:production": "vue-tsc -b && vite build --mode production",
-    "preview": "vite preview --port 6001",
+    "preview": "vite preview --port 6003",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\""
+  },
+  "dependencies": {
+    "vue-json-pretty": "^2.6.0"
   }
 }

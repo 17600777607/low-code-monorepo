@@ -1,5 +1,5 @@
 {
-  "name": "LowCode/admin",
+  "name": "@cwj/admin",
   "version": "1.0.0",
   "description": "管理后台 - 系统管理、用户管理、权限管理等功能",
   "type": "module",

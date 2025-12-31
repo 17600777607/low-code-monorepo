@@ -1,5 +1,5 @@
 {
-  "name": "LowCode/renderer",
+  "name": "@cwj/renderer",
   "version": "1.0.0",
   "description": "渲染器 - 低代码平台",
   "type": "module",
