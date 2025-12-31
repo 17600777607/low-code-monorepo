@@ -20,6 +20,7 @@
         :selected-component="selectedComponent"
         :generated-code="generatedCode"
         @update-prop="updateComponentProp"
+        @update-meta="updateComponentMeta"
         @update-children="updateComponentChildren"
         @remove-selected-component="removeSelectedComponent"
       />
@@ -243,6 +244,37 @@ const updateComponentProp = (key: string, value: any) => {
           value,
         })
       }
+    }
+  }
+}
+
+// 更新组件 Meta 信息
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateComponentMeta = (key: string, value: any) => {
+  if (
+    selectedIndex.value !== null &&
+    selectedIndex.value >= 0 &&
+    selectedIndex.value < canvasComponents.value.length
+  ) {
+    const component = canvasComponents.value[selectedIndex.value]
+    if (component) {
+      if (!component.meta) {
+        component.meta = {}
+      }
+
+      // 处理嵌套路径 (e.g. "size.width")
+      const keys = key.split('.')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let target: any = component.meta
+
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!target[keys[i]]) {
+          target[keys[i]] = {}
+        }
+        target = target[keys[i]]
+      }
+
+      target[keys[keys.length - 1]] = value
     }
   }
 }

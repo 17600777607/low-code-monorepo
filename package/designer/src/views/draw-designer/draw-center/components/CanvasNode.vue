@@ -102,8 +102,10 @@ const nodeStyle = computed(() => {
     position: 'absolute' as const,
     left: `${meta.position.x}px`,
     top: `${meta.position.y}px`,
-    width: meta.size?.width ? `${meta.size.width}px` : 'auto',
-    height: meta.size?.height ? `${meta.size.height}px` : 'auto',
+    width:
+      typeof meta.size?.width === 'number' ? `${meta.size.width}px` : meta.size?.width || 'auto',
+    height:
+      typeof meta.size?.height === 'number' ? `${meta.size.height}px` : meta.size?.height || 'auto',
   }
 })
 

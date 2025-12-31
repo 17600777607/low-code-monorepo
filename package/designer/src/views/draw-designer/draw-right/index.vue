@@ -9,6 +9,7 @@
             :selected-component="adaptedComponent"
             :raw-node="selectedComponent"
             @update-prop="handleUpdateProp"
+            @update-meta="handleUpdateMeta"
             @update-children="handleUpdateChildren"
           />
         </el-tab-pane>
@@ -19,6 +20,7 @@
             :selected-component="adaptedComponent"
             :raw-node="selectedComponent"
             @update-prop="handleUpdateProp"
+            @update-meta="handleUpdateMeta"
             @update-children="handleUpdateChildren"
           />
         </el-tab-pane>
@@ -87,6 +89,8 @@ const adaptedComponent = computed<CanvasComponent | null>(() => {
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateProp: [key: string, value: any]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateMeta: [key: string, value: any]
   updateChildren: [value: string]
   removeSelectedComponent: []
 }>()
@@ -103,6 +107,12 @@ function handleUpdateProp(key: string, value: any) {
 // 更新子内容
 function handleUpdateChildren(value: string) {
   emit('updateChildren', value)
+}
+
+// 更新 Meta
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function handleUpdateMeta(key: string, value: any) {
+  emit('updateMeta', key, value)
 }
 </script>
 

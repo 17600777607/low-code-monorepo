@@ -54,7 +54,7 @@ export interface ElementNode extends BaseNode {
     /** 画布位置 */
     position?: { x: number; y: number }
     /** 尺寸 */
-    size?: { width?: number; height?: number }
+    size?: { width?: number | string; height?: number | string }
     /** 布局模式 */
     layout?: 'flex' | 'block' | 'grid'
     /** 是否可作为容器(可接收子组件) */

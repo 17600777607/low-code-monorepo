@@ -28,13 +28,14 @@ interface OptionItem<T = string> {
 /**
  * 按钮类型选项
  */
+
 const EL_BUTTON_TYPE_OPTIONS: readonly OptionItem<ButtonType | ''>[] = [
-  { label: '默认', value: '' },
-  { label: '主要', value: 'primary' },
-  { label: '成功', value: 'success' },
-  { label: '警告', value: 'warning' },
-  { label: '危险', value: 'danger' },
-  { label: '信息', value: 'info' },
+  { label: '默认（default）', value: '' },
+  { label: '主要（primary）', value: 'primary' },
+  { label: '成功（success）', value: 'success' },
+  { label: '警告（warning）', value: 'warning' },
+  { label: '危险（danger）', value: 'danger' },
+  { label: '信息（info）', value: 'info' },
 ] as const
 
 /**
@@ -42,9 +43,9 @@ const EL_BUTTON_TYPE_OPTIONS: readonly OptionItem<ButtonType | ''>[] = [
  * 适用于按钮、输入框、选择器等多种组件
  */
 const EL_BUTTON_SIZE_OPTIONS: readonly OptionItem<ComponentSize>[] = [
-  { label: '大', value: 'large' },
-  { label: '默认', value: 'default' },
-  { label: '小', value: 'small' },
+  { label: '大（large）', value: 'large' },
+  { label: '默认（default）', value: 'default' },
+  { label: '小（small）', value: 'small' },
 ] as const
 
 export { EL_BUTTON_TYPE_OPTIONS, EL_BUTTON_SIZE_OPTIONS }
